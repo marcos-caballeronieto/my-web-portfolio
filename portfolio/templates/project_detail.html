@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{{ project.title }}</h1>
+
+    {% if project.image %}
+        <img src="{{ project.image.url }}" alt="{{ project.title }}">
+    {% endif %}
+
+    <p>{{ project.description }}</p>
+
+    {% if project.link %}
+        <p><a href="{{ project.link }}" target="_blank">View Live Project</a></p>
+    {% endif %}
+
+    <a href="{% url 'project_list' %}" style="display: block; margin-top: 20px;">
+        &larr; Back to all projects
+    </a>
+{% endblock %}
