@@ -3,6 +3,20 @@
 {% block content %}
     <h1 class="mb-4">Todos Mis Proyectos</h1>
 
+    <div class="text-center mb-4">
+        
+        <a href="{% url 'project_list' %}" 
+           class="btn {% if not active_category %}btn-primary{% else %}btn-outline-primary{% endif %} btn-sm m-1">
+            All Projects
+        </a>
+        
+        {% for category in categories %}
+            <a href="?category={{ category.name }}" 
+               class="btn {% if active_category == category.name %}btn-primary{% else %}btn-outline-primary{% endif %} btn-sm m-1">
+                {{ category.name }}
+            </a>
+        {% endfor %}
+    </div>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
 
         {% for project in projects %}
@@ -18,13 +32,15 @@
                             </a>
                         </h5>
                         <p class="card-text">{{ project.description|truncatewords:20 }}</p>
-
                         <a href="{% url 'project_detail' project.pk %}" class="btn btn-primary mt-auto">Ver detalles</a>
                     </div>
                 </div>
             </div>
+
         {% empty %}
-            <p>No hay proyectos para mostrar en este momento.</p>
+            <div class="col">
+                <p>No hay proyectos para mostrar{% if active_category %} en la categoría "{{ active_category }}"{% endif %}.</p>
+            </div>
         {% endfor %}
 
     </div>
