@@ -1,85 +1,69 @@
 {% extends 'base.html' %}
 
-{% block extra_styles %}
-<style>
-    .latest-projects-wrapper {
-        overflow-x: auto;
-        white-space: nowrap;
-        padding-bottom: 20px;
-    }
-
-    .project-small {
-        display: inline-block; 
-        width: 280px;          
-        margin-right: 15px;   
-        vertical-align: top;  
-        white-space: normal;   
-
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        background: #fff;
-        padding: 10px;
-    }
-
-    .project-small img {
-        max-width: 100%;
-        height: 150px;     
-        object-fit: cover;   
-        border-radius: 4px;
-    }
-
-    .project-small h4 {
-        margin-top: 5px;
-        margin-bottom: 5px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-</style>
-{% endblock %}
-
 {% block content %}
 
-    <h2>Featured Work</h2>
-    {% for project in featured_projects %}
-        <div class="project">
-            <h3>
-                <a href="{% url 'project_detail' project.pk %}">
-                    {{ project.title }}
-                </a>
-            </h3>
-            {% if project.image %}
-                <img src="{{ project.image.url }}" alt="{{ project.title }}">
-            {% endif %}
-            <p>{{ project.description|truncatewords:30 }}</p>
+    <div class="card bg-light p-3 p-md-4 mb-5">
+        <div class="card-body text-center">
+            <h2 class="card-title h3 mb-3">Welcome!</h2>
+            <p class="card-text lead" style="max-width: 600px; margin: 0 auto 1.5rem auto;">
+                Hello! I'm Marcos Caballero a biomedical and mechanical engineering student passionate about technology and innovation. Here, you'll find a selection of my projects showcasing my skills and creativity as well as complete information about me.
+            </p>
+            <a href="{% url 'about' %}" class="btn btn-primary">
+                More about me &rarr;
+            </a>
         </div>
-    {% empty %}
-        <p>No featured projects at the moment. Check back soon!</p>
-    {% endfor %}
+    </div>
 
-    <hr style="margin: 30px 0;">
+    <h2 class="mb-4">Featured Work</h2>
 
-    <h2>Latest Projects</h2>
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+        {% for project in featured_projects %}
+            <div class="col">
+                <div class="card h-100">
+                    {% if project.image %}
+                        <img src="{{ project.image.url }}" class="card-img-top" alt="{{ project.title }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <a href="{% url 'project_detail' project.pk %}" class="text-decoration-none">
+                                {{ project.title }}
+                            </a>
+                        </h5>
+                        <p class="card-text">{{ project.description|truncatewords:20 }}</p>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p>No featured projects at the moment. Check back soon!</p>
+        {% endfor %}
+    </div>
 
-    <div class="latest-projects-wrapper">
+    <hr class="my-5">
+
+    <h2 class="mb-4">Latest Projects</h2>
+
+    <div class="d-flex overflow-auto pb-3">
         {% for project in latest_projects %}
-            <div class="project-small">
+            <div class="card flex-shrink-0 me-3" style="width: 18rem;">
                 {% if project.image %}
-                    <a href="{% url 'project_detail' project.pk %}">
-                        <img src="{{ project.image.url }}" alt="{{ project.title }}">
-                    </a>
+                    <img src="{{ project.image.url }}" class="card-img-top" alt="{{ project.title }}" style="height: 180px; object-fit: cover;">
                 {% endif %}
-                <h4>
-                    <a href="{% url 'project_detail' project.pk %}">
-                        {{ project.title }}
-                    </a>
-                </h4>
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a href="{% url 'project_detail' project.pk %}" class="text-decoration-none">
+                            {{ project.title }}
+                        </a>
+                    </h5>
+                </div>
             </div>
         {% empty %}
             <p>No other projects to show.</p>
         {% endfor %}
     </div>
 
-    <hr style="margin: 30px 0;">
-    <a href="{% url 'project_list' %}">View All My Projects &rarr;</a>
+    <hr class="my-5">
+    <a href="{% url 'project_list' %}" class="btn btn-primary">
+        View All My Projects &rarr;
+    </a>
 
 {% endblock %}

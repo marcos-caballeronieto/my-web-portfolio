@@ -1,19 +1,28 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>{{ project.title }}</h1>
 
-    {% if project.image %}
-        <img src="{{ project.image.url }}" alt="{{ project.title }}">
-    {% endif %}
+    <div class="row justify-content-center">
+        <div class="col-lg-8"> <h1 class="mb-3">{{ project.title }}</h1>
+            <hr>
 
-    <p>{{ project.description }}</p>
+            {% if project.image %}
+                <img src="{{ project.image.url }}" alt="{{ project.title }}" class="img-fluid rounded mb-4">
+            {% endif %}
 
-    {% if project.link %}
-        <p><a href="{{ project.link }}" target="_blank">View Live Project</a></p>
-    {% endif %}
+            <p style="white-space: pre-wrap;">{{ project.description|linebreaks }}</p>
 
-    <a href="{% url 'project_list' %}" style="display: block; margin-top: 20px;">
-        &larr; Back to all projects
-    </a>
+            {% if project.link %}
+                <a href="{{ project.link }}" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+                    Visitar Proyecto &rarr;
+                </a>
+            {% endif %}
+
+            <a href="{% url 'project_list' %}" class="btn btn-secondary">
+                &larr; Volver a Proyectos
+            </a>
+
+        </div>
+    </div>
+
 {% endblock %}
