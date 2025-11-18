@@ -14,12 +14,16 @@
 
             {% if project.link %}
                 <a href="{{ project.link }}" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
-                    Visitar Proyecto &rarr;
+                    Visit project &rarr;
                 </a>
             {% endif %}
 
             <a href="{% url 'project_list' %}" class="btn btn-secondary">
-                &larr; Volver a Proyectos
+                &larr; Go back to Projects
+            </a>
+
+            <a href="{% url 'home' %}" class="btn btn-secondary">
+                &larr; Go back to Home
             </a>
 
         </div>
