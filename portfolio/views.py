@@ -22,9 +22,9 @@ def project_detail(request, pk):
 def project_list(request):
     category_name = request.GET.get('category')
     if category_name:
-        projects = Project.objects.filter(categories__name=category_name).order_by('-pk')
+        projects = Project.objects.filter(categories__name=category_name).order_by('-relevance')
     else:
-        projects = Project.objects.all().order_by('-pk')
+        projects = Project.objects.all().order_by('-relevance')
     
     categories = Category.objects.all()
     context = {

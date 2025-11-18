@@ -18,6 +18,13 @@ class Project(models.Model):
     url = models.URLField(blank=True)
     is_featured = models.BooleanField(default=False)
     categories = models.ManyToManyField(Category, related_name='projects')
+    class relvance(models.IntegerChoices):
+        VERY_LOW = 1, 'Very Low'
+        LOW = 2, 'Low'
+        MEDIUM = 3, 'Medium'
+        HIGH = 4, 'High'
+        VERY_HIGH = 5, 'Very High'
+    relevance = models.IntegerField(choices=relvance.choices, default=relvance.MEDIUM)
 
     def __str__(self):
         return self.title
