@@ -16,6 +16,7 @@ class Project(models.Model):
     description = models.TextField()
     image = models.ImageField(upload_to='projects/')
     url = models.URLField(blank=True)
+    github_url = models.URLField(blank=True)
     is_featured = models.BooleanField(default=False)
     categories = models.ManyToManyField(Category, related_name='projects')
     class relvance(models.IntegerChoices):
