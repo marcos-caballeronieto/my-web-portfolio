@@ -13,7 +13,9 @@ def home(request):
     return render(request, './home.html', context)
 
 def about(request):
-    return render(request, './about.html')
+    language = request.GET.get('lang', 'en')
+    context = {'language': language}
+    return render(request, './about.html', context)
 
 def project_detail(request, pk):
     project = get_object_or_404(Project, pk=pk)
