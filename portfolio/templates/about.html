@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 
@@ -8,65 +9,159 @@
             <div class="text-end mb-4">
                 <span class="text-muted me-2 small">Language:</span>
                 <div class="btn-group" role="group">
-                    <a href="?lang=en" class="btn btn-sm {% if language == 'en' %}btn-dark{% else %}btn-outline-dark{% endif %}">
-                        English 🇺🇸
-                    </a>
-                    
-                    <a href="?lang=es" class="btn btn-sm {% if language == 'es' %}btn-dark{% else %}btn-outline-dark{% endif %}">
-                        Español 🇪🇸
-                    </a>
+                    <a href="?lang=en" class="btn btn-sm {% if language == 'en' %}btn-dark{% else %}btn-outline-dark{% endif %}">English 🇺🇸</a>
+                    <a href="?lang=es" class="btn btn-sm {% if language == 'es' %}btn-dark{% else %}btn-outline-dark{% endif %}">Español 🇪🇸</a>
                 </div>
             </div>
 
-
-            <div class="card shadow-sm">
-                <div class="card-body p-5">
-                    
-                    {% if language == 'es' %}
-                    
-                        <h1 class="mb-4">Sobre Mí</h1>
-                        <p class="lead">
-                            ¡Hola! Soy un desarrollador web apasionado por crear soluciones eficientes.
-                        </p>
-                        <hr>
-                        
-                        <h4>🎓 Educación</h4>
-                        <ul class="mb-4">
-                            <li><strong>Ingeniería Informática</strong> - Universidad Politécnica (2020 - 2024)</li>
-                        </ul>
-
-                        <h4>🏆 Certificados</h4>
-                        <ul>
-                            <li>Desarrollo Backend con Python & Django</li>
-                            <li>Fundamentos de JavaScript</li>
-                        </ul>
-
-                    {% else %}
-                    
-                        <h1 class="mb-4">About Me</h1>
-                        <p class="lead">
-                            Hello! I am a web developer passionate about building efficient solutions.
-                        </p>
-                        <hr>
-                        
-                        <h4>🎓 Education</h4>
-                        <ul class="mb-4">
-                            <li><strong>Computer Science Degree</strong> - Polytechnic University (2020 - 2024)</li>
-                        </ul>
-
-                        <h4>🏆 Certificates</h4>
-                        <ul>
-                            <li>Backend Development with Python & Django</li>
-                            <li>JavaScript Fundamentals</li>
-                        </ul>
-
-                    {% endif %}
-                    
-                </div>
-            </div>
+            {% if language == 'es' %}
             
-            <div class="mt-4 text-center">
-                <a href="{% url 'home' %}" class="text-decoration-none">&larr; {% if language == 'es' %}Volver al Inicio{% else %}Back to Home{% endif %}</a>
+                <div class="card shadow-sm">
+                    <div class="card-body p-5">
+                        <h1 class="mb-4">Sobre Mí</h1>
+                        <p class="lead">¡Hola! Soy un desarrollador web apasionado por crear soluciones eficientes.</p>
+                        <hr>
+                        
+                        <h4 class="mb-3">🎓 Educación</h4>
+                        <div class="mb-4">
+                            <h5 class="fw-bold">Grado en Ingeniería Informática</h5>
+                            <p class="text-muted mb-2">Universidad Politécnica (2020 - 2024)</p>
+                            <p>Formación integral especializada en el ciclo completo de desarrollo de software...</p>
+                            <p class="small text-muted"><strong>Materias destacadas:</strong> Estructuras de Datos, IA, Ingeniería del Software.</p>
+                        </div>
+
+                        <h4 class="mb-3">🏆 Certificados y Cursos</h4>
+
+                            <div class="d-flex align-items-start mb-4"> <div class="fs-4 me-3">🐍</div>
+                                <div>
+                                    <h6 class="fw-bold mb-0">Desarrollo Backend con Python & Django</h6>
+                                    <small class="text-muted d-block mb-1">Udemy - Emitido en 2024</small>
+                                    
+                                    <div class="small">
+                                        <a href="https://www.udemy.com/certificate/ejemplo-id/" target="_blank" rel="noopener noreferrer" class="text-decoration-none me-2">
+                                            🔗 Ver credencial
+                                        </a>
+                                        
+                                        <span class="text-muted">|</span>
+                                        
+                                        <a href="{% static 'portfolio/certificates/python_cert.pdf' %}" download class="text-decoration-none ms-2">
+                                            📥 Descargar
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex align-items-start mb-4">
+                                <div class="fs-4 me-3">💻</div>
+                                <div>
+                                    <h6 class="fw-bold mb-0">Fundamentos de JavaScript</h6>
+                                    <small class="text-muted d-block mb-1">Codecademy - Emitido en 2023</small>
+                                    
+                                    <div class="small">
+                                        <a href="#" target="_blank" rel="noopener noreferrer" class="text-decoration-none me-2">
+                                            🔗 Ver credencial
+                                        </a>
+                                        <span class="text-muted">|</span>
+                                        <a href="{% static 'portfolio/certificates/js_cert.pdf' %}" download class="text-decoration-none ms-2">
+                                            📥 Descargar
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        <h4 class="mt-4">🛠️ Habilidades</h4>
+                        <div>
+                            <span class="badge bg-dark me-1">Python</span>
+                            <span class="badge bg-dark me-1">Django</span>
+                            <span class="badge bg-dark me-1">HTML5</span>
+                            <span class="badge bg-dark me-1">CSS3</span>
+                            <span class="badge bg-dark me-1">Bootstrap</span>
+                            <span class="badge bg-dark me-1">Git</span>
+                            <span class="badge bg-dark me-1">SQL</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-end mt-3">
+                    <a href="{% static 'portfolio/cv_es.pdf' %}" class="btn btn-dark" target="_blank">📄 Descargar CV (PDF)</a>
+                </div>
+
+            {% else %}
+            
+                <div class="card shadow-sm">
+                    <div class="card-body p-5">
+                        <h1 class="mb-4">About Me</h1>
+                        <p class="lead">Hello! I am a web developer passionate about building efficient solutions.</p>
+                        <hr>
+                        
+                        <h4 class="mb-3">🎓 Education</h4>
+                        <div class="mb-4">
+                            <h5 class="fw-bold">Computer Science Degree</h5>
+                            <p class="text-muted mb-2">Polytechnic University (2020 - 2024)</p>
+                            <p>Comprehensive training focused on the full software development lifecycle...</p>
+                            <p class="small text-muted"><strong>Key Subjects:</strong> Data Structures, AI, Software Engineering.</p>
+                        </div>
+
+                        <h4 class="mb-3">🏆 Certificates & Courses</h4>
+
+                            <div class="d-flex align-items-start mb-4">
+                                <div class="fs-4 me-3">🐍</div>
+                                <div>
+                                    <h6 class="fw-bold mb-0">Backend Development with Python & Django</h6>
+                                    <small class="text-muted d-block mb-1">Udemy - Issued 2024</small>
+                                    
+                                    <div class="small">
+                                        <a href="https://www.udemy.com/certificate/example-id/" target="_blank" rel="noopener noreferrer" class="text-decoration-none me-2">
+                                            🔗 View Credential
+                                        </a>
+                                        
+                                        <span class="text-muted">|</span>
+                                        
+                                        <a href="{% static 'portfolio/certificates/python_cert.pdf' %}" download class="text-decoration-none ms-2">
+                                            📥 Download
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex align-items-start mb-4">
+                                <div class="fs-4 me-3">💻</div>
+                                <div>
+                                    <h6 class="fw-bold mb-0">JavaScript Fundamentals</h6>
+                                    <small class="text-muted d-block mb-1">Codecademy - Issued 2023</small>
+                                    
+                                    <div class="small">
+                                        <a href="#" target="_blank" rel="noopener noreferrer" class="text-decoration-none me-2">
+                                            🔗 View Credential
+                                        </a>
+                                        <span class="text-muted">|</span>
+                                        <a href="{% static 'portfolio/certificates/js_cert.pdf' %}" download class="text-decoration-none ms-2">
+                                            📥 Download
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        <h4 class="mt-4">🛠️ Skills</h4>
+                        <div>
+                            <span class="badge bg-dark me-1">Python</span>
+                            <span class="badge bg-dark me-1">Django</span>
+                            <span class="badge bg-dark me-1">HTML5</span>
+                            <span class="badge bg-dark me-1">CSS3</span>
+                            <span class="badge bg-dark me-1">Bootstrap</span>
+                            <span class="badge bg-dark me-1">Git</span>
+                            <span class="badge bg-dark me-1">SQL</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-end mt-3">
+                    <a href="{% static 'portfolio/cv_en.pdf' %}" class="btn btn-dark" target="_blank">📄 Download Resume (PDF)</a>
+                </div>
+
+            {% endif %}
+            
+            <div class="mt-5 text-center">
+                <a href="{% url 'home' %}" class="text-decoration-none text-dark">&larr; {% if language == 'es' %}Volver al Inicio{% else %}Back to Home{% endif %}</a>
             </div>
 
         </div>
