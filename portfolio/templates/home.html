@@ -2,13 +2,13 @@
 
 {% block content %}
 
-    <div class="card bg-light p-3 p-md-4 mb-5">
-        <div class="card-body text-center">
+    <div class="card bg-light p-3 p-md-4 mb-5 shadow-sm border-0"> <div class="card-body text-center">
             <h2 class="card-title h3 mb-3">Welcome!</h2>
             <p class="card-text lead" style="max-width: 600px; margin: 0 auto 1.5rem auto;">
-                Hello! I'm Marcos Caballero a biomedical and mechanical engineering student passionate about technology and innovation. Here, you'll find a selection of my projects showcasing my skills and creativity as well as complete information about me.
+                Hello! I'm Marcos Caballero, a biomedical and mechanical engineering student passionate about technology and innovation. Here, you'll find a selection of my projects showcasing my skills and creativity as well as complete information about me.
             </p>
-            <a href="{% url 'about' %}" class="btn btn-primary">
+            
+            <a href="{% url 'about' %}" class="btn btn-dark px-4 py-2">
                 More about me &rarr;
             </a>
         </div>
@@ -19,17 +19,16 @@
     <div class="row row-cols-1 row-cols-md-2 g-4">
         {% for project in featured_projects %}
             <div class="col">
-                <div class="card h-100">
-                    {% if project.image %}
+                <div class="card h-100 shadow-sm border-0"> {% if project.image %}
                         <img src="{{ project.image.url }}" class="card-img-top" alt="{{ project.title }}">
                     {% endif %}
                     <div class="card-body">
                         <h5 class="card-title">
-                            <a href="{% url 'project_detail' project.pk %}" class="text-decoration-none">
+                            <a href="{% url 'project_detail' project.pk %}" class="text-decoration-none text-dark fw-bold">
                                 {{ project.title }}
                             </a>
                         </h5>
-                        <p class="card-text">{{ project.description|truncatewords:20 }}</p>
+                        <p class="card-text text-muted">{{ project.description|truncatewords:20 }}</p>
                     </div>
                 </div>
             </div>
@@ -44,13 +43,13 @@
 
     <div class="d-flex overflow-auto pb-3">
         {% for project in latest_projects %}
-            <div class="card flex-shrink-0 me-3" style="width: 18rem;">
+            <div class="card flex-shrink-0 me-3 shadow-sm border-0" style="width: 18rem;">
                 {% if project.image %}
                     <img src="{{ project.image.url }}" class="card-img-top" alt="{{ project.title }}" style="height: 180px; object-fit: cover;">
                 {% endif %}
                 <div class="card-body">
                     <h5 class="card-title">
-                        <a href="{% url 'project_detail' project.pk %}" class="text-decoration-none">
+                        <a href="{% url 'project_detail' project.pk %}" class="text-decoration-none text-dark fw-bold">
                             {{ project.title }}
                         </a>
                     </h5>
@@ -62,8 +61,10 @@
     </div>
 
     <hr class="my-5">
-    <a href="{% url 'project_list' %}" class="btn btn-primary">
-        View All My Projects &rarr;
-    </a>
+    
+    <div class="text-center mb-4"> <a href="{% url 'project_list' %}" class="btn btn-dark px-5 py-2">
+            View All My Projects &rarr;
+        </a>
+    </div>
 
 {% endblock %}
