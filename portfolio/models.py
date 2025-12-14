@@ -14,6 +14,7 @@ class Category(models.Model):
 
 class Project(models.Model):
     title = models.CharField(max_length=200)
+    short_description = models.TextField(default='No description', blank=True)
     description = CKEditor5Field('Description', config_name='default')
     image = models.ImageField(upload_to='projects/')
     url = models.URLField(blank=True)
