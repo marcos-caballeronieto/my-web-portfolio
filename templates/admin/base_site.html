@@ -1,0 +1,51 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <style>
+        /* FORZAR ESTILOS DE CKEDITOR 5 */
+        
+        /* 1. Fondo blanco y texto negro para el área de escritura */
+        .ck.ck-content,
+        .ck.ck-editor__editable_inline {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+        }
+
+        /* 2. Asegurar que los párrafos dentro del editor sean negros */
+        .ck.ck-content p, 
+        .ck.ck-content h1, 
+        .ck.ck-content h2, 
+        .ck.ck-content h3,
+        .ck.ck-content ul, 
+        .ck.ck-content ol, 
+        .ck.ck-content li {
+            color: #000000 !important;
+        }
+
+        /* 3. Variables globales de CKEditor para sobrescribir el modo oscuro */
+        :root {
+            --ck-color-base-background: #ffffff !important;
+            --ck-color-base-foreground: #000000 !important;
+            --ck-color-text: #000000 !important;
+            --ck-color-editor-base-text: #000000 !important;
+            --ck-color-toolbar-background: #f0f0f0 !important;
+            --ck-color-toolbar-text: #000000 !important;
+        }
+
+        /* 4. Bloques de código (para que no sean blancos sobre blanco) */
+        .ck-code-block pre {
+            background-color: #2b2b2b !important; /* Fondo gris oscuro para código */
+            color: #f8f8f2 !important; /* Texto claro para código */
+            border-radius: 4px;
+        }
+    </style>
+{% endblock %}
+
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'admin:index' %}">{{ site_header|default:_('Django administration') }}</a></h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
