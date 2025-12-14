@@ -6,271 +6,62 @@
     <div class="row justify-content-center">
         <div class="col-lg-8">
 
-            <div class="text-end mb-4">
-                <span class="text-muted me-2 small">Language:</span>
-                <div class="btn-group" role="group">
-                    <a href="?lang=en" class="btn btn-sm {% if language == 'en' %}btn-dark{% else %}btn-outline-dark{% endif %}">English 🇺🇸</a>
-                    <a href="?lang=es" class="btn btn-sm {% if language == 'es' %}btn-dark{% else %}btn-outline-dark{% endif %}">Español 🇪🇸</a>
+            <div class="text-center mb-4">
+                <div class="btn-group shadow-sm" role="group" aria-label="Language Toggle">
+                    <button type="button" class="btn btn-dark px-4" id="btn-en" onclick="showEnglish()">
+                        🇺🇸 English
+                    </button>
+                    <button type="button" class="btn btn-outline-dark px-4" id="btn-es" onclick="showSpanish()">
+                        🇪🇸 Español
+                    </button>
                 </div>
             </div>
 
-            {% if language == 'es' %}
-            
-                <div class="card shadow-sm">
-                    <div class="card-body p-5">
-                        <h1 class="mb-4">Sobre Mí</h1>
-                        <p class="lead">Soy Marcos Caballero, un estudiante de 18 años con una gran pasión por la inteligencia artificial, la programación y el análisis de datos. A través del aprendizaje autodidacta y la experiencia práctica, he desarrollado habilidades en Python, SQL y TensorFlow.</p>
-                        <p class="lead">Actualmente compagino mis estudios en Ingeniería Biomédica e Ingeniería Mecánica con experiencia profesional real. He trabajado como AI Corrector e Ingeniero de Prompts, enfocándome en revisar y mejorar contenido generado por IA. Mi curiosidad y mentalidad resolutiva me hacen encajar perfectamente en roles relacionados con la IA, los datos y el desarrollo de software.</p>
-                        <hr>
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4 p-md-5">
 
-                        <h4 class="mb-3">💼 Experiencia Laboral</h4>
-
-                            <div class="mb-4">
-                                <div class="d-flex justify-content-between align-items-start flex-column flex-md-row">
-                                    <div>
-                                        <h5 class="fw-bold mb-0">AI Corrector / Prompt Engineer</h5>
-                                        <p class="text-primary fw-bold mb-1">Outlier.ai</p>
-                                    </div>
-                                    <span class="badge bg-light text-dark border">2024 - Presente</span>
-                                </div>
-                                <p class="text-muted small mb-2">Remoto / Madrid, España</p>
-                                <ul>
-                                    <li>Revisión y corrección de contenido educativo generado por IA para asegurar precisión, claridad y tono adecuado.</li>
-                                    <li>Diseño de prompts y casos de prueba para Grandes Modelos de Lenguaje (LLMs).</li>
-                                    <li>Colaboración con lingüistas e ingenieros para mejorar la interacción humano-IA.</li>
-                                    <li>Trabajo con sistemas de IA para asegurar respuestas cultural y lingüísticamente apropiadas.</li>
-                                </ul>
-                            </div>
-
-                            <div class="mb-4">
-                                <div class="d-flex justify-content-between align-items-start flex-column flex-md-row">
-                                    <div>
-                                        <h5 class="fw-bold mb-0">Supervisor de Exámenes Cambridge</h5>
-                                        <p class="text-primary fw-bold mb-1">Cambridge Assessment English</p>
-                                    </div>
-                                    <span class="badge bg-light text-dark border">2024 - Presente</span>
-                                </div>
-                                <p class="text-muted small mb-2">Madrid, España</p>
-                                <ul>
-                                    <li>Asistencia en la coordinación y supervisión de exámenes oficiales.</li>
-                                    <li>Apoyo a estudiantes durante el proceso de evaluación en un entorno multilingüe.</li>
-                                </ul>
-                            </div>
+                    <div id="english-content">
+                        <h1 class="mb-4 fw-bold">About Me</h1>
                         
-                        <h4 class="mb-3">🎓 Educación</h4>
-                        
-                            <div class="mb-5 border-start border-4 border-primary ps-3">
-                                <div class="d-flex justify-content-between align-items-baseline">
-                                    <h5 class="fw-bold text-primary mb-1">Grado en Ingeniería Biomédica (Inglés)</h5>
-                                    <span class="badge bg-primary">2024 - Presente</span>
-                                </div>
-                                <p class="text-muted fw-bold mb-2">Universidad Rey Juan Carlos (Campus Fuenlabrada)</p>
-                                
-                                <p class="mb-3">
-                                    Enfoque en aplicaciones de IA en medicina y biología. Proyectos de simulación, modelado y técnicas básicas de Machine Learning para datos sanitarios.
-                                </p>
-
-                                <div class="row g-3 mb-3">
-                                    <div class="col-md-6">
-                                        <div class="p-3 bg-light rounded h-100">
-                                            <h6 class="fw-bold text-success">🚀 Utilidad Profesional</h6>
-                                            <ul class="small mb-0 ps-3">
-                                                <li>Diseño de dispositivos médicos y electromedicina.</li>
-                                                <li>Sistemas de información hospitalaria (eHealth).</li>
-                                                <li>Análisis de Big Data clínico y Bioinformática.</li>
-                                                <li>Investigación y desarrollo farmacéutico.</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="p-3 bg-light rounded h-100">
-                                            <h6 class="fw-bold text-dark">🛠️ Competencias Clave</h6>
-                                            <div class="d-flex flex-wrap gap-1">
-                                                <span class="badge bg-white text-dark border">Python (Data Science)</span>
-                                                <span class="badge bg-white text-dark border">Procesado de Señales</span>
-                                                <span class="badge bg-white text-dark border">Bioestadística</span>
-                                                <span class="badge bg-white text-dark border">IA & Machine Learning</span>
-                                                <span class="badge bg-white text-dark border">Álgebra Lineal</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <h6 class="fw-bold mt-3">📚 Estructura del Plan de Estudios</h6>
-                                <div class="accordion accordion-flush" id="accordionCurriculumBioEs">
-                                    <div class="accordion-item">
-                                        <h2 class="accordion-header" id="flush-headingOneBioEs">
-                                            <button class="accordion-button collapsed py-2 bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOneBioEs">
-                                                <small class="fw-bold">Ver desglose por cursos</small>
-                                            </button>
-                                        </h2>
-                                        <div id="flush-collapseOneBioEs" class="accordion-collapse collapse" data-bs-parent="#accordionCurriculumBioEs">
-                                            <div class="accordion-body small">
-                                                <div class="row">
-                                                    <div class="col-md-6 mb-2">
-                                                        <strong>1º Curso (Fundamentos):</strong> Cálculo, Álgebra, Física, Anatomía Humana, Programación, Bioquímica.
-                                                    </div>
-                                                    <div class="col-md-6 mb-2">
-                                                        <strong>2º Curso (Ingeniería Core):</strong> Redes, Fisiología, Electrónica (Analógica/Digital), Estadística, Sistemas Lineales.
-                                                    </div>
-                                                    <div class="col-md-6 mb-2">
-                                                        <strong>3º Curso (Especialización):</strong> Equipamiento Biomédico, Bases de Datos, Procesado de Señales, Ingeniería Hospitalaria, Farmacología.
-                                                    </div>
-                                                    <div class="col-md-6 mb-2">
-                                                        <strong>4º Curso (Profesionalización):</strong> Inteligencia Artificial, Bioinformática, Biomateriales, Imagen Médica, Big Data, Prácticas Externas.
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="mb-5 border-start border-4 border-danger ps-3">
-                                <div class="d-flex justify-content-between align-items-baseline">
-                                    <h5 class="fw-bold text-danger mb-1">Grado en Ingeniería Mecánica</h5>
-                                    <span class="badge bg-danger">2024 - Presente</span>
-                                </div>
-                                <p class="text-muted fw-bold mb-2">UNED (Universidad Nacional de Educación a Distancia)</p>
-                                
-                                <p class="mb-3">
-                                    Enfoque en diseño, análisis y optimización de sistemas mecánicos. Proyectos que incluyen simulaciones computacionales, análisis estructural y diseño mecánico.
-                                </p>
-
-                                <div class="row g-3 mb-3">
-                                    <div class="col-md-6">
-                                        <div class="p-3 bg-light rounded h-100">
-                                            <h6 class="fw-bold text-success">🚀 Utilidad Profesional</h6>
-                                            <ul class="small mb-0 ps-3">
-                                                <li>Diseño y cálculo de maquinaria y vehículos.</li>
-                                                <li>Dirección de proyectos y plantas industriales.</li>
-                                                <li>Gestión energética y energías renovables.</li>
-                                                <li>Cálculo de estructuras y construcción industrial.</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="p-3 bg-light rounded h-100">
-                                            <h6 class="fw-bold text-dark">🛠️ Competencias Clave</h6>
-                                            <div class="d-flex flex-wrap gap-1">
-                                                <span class="badge bg-white text-dark border">Termodinámica</span>
-                                                <span class="badge bg-white text-dark border">Mecánica de Fluidos</span>
-                                                <span class="badge bg-white text-dark border">Ciencia de Materiales</span>
-                                                <span class="badge bg-white text-dark border">CAD (SolidWorks/CATIA)</span>
-                                                <span class="badge bg-white text-dark border">Tecnología Fabricación</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <h6 class="fw-bold mt-3">📚 Estructura del Plan de Estudios</h6>
-                                <div class="accordion accordion-flush" id="accordionCurriculumMecEs">
-                                    <div class="accordion-item">
-                                        <h2 class="accordion-header" id="flush-headingOneMecEs">
-                                            <button class="accordion-button collapsed py-2 bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOneMecEs">
-                                                <small class="fw-bold">Ver desglose de materias</small>
-                                            </button>
-                                        </h2>
-                                        <div id="flush-collapseOneMecEs" class="accordion-collapse collapse" data-bs-parent="#accordionCurriculumMecEs">
-                                            <div class="accordion-body small">
-                                                <div class="row">
-                                                    <div class="col-md-12 mb-2">
-                                                        <strong>Materias Básicas:</strong> Matemáticas, Física, Química, Expresión Gráfica, Informática, Estadística, Empresa.
-                                                    </div>
-                                                    <div class="col-md-12 mb-2">
-                                                        <strong>Materias Fundamentales:</strong> Mecánica del Sólido, Elasticidad y Resistencia de Materiales, Ingeniería Térmica, Mecánica de Fluidos, Teoría de Máquinas.
-                                                    </div>
-                                                    <div class="col-md-12 mb-2">
-                                                        <strong>Tecnología Específica:</strong> Tecnología Mecánica, Cálculo y Diseño de Máquinas, Estructuras y Construcciones Industriales, Ingeniería de Materiales.
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        <h4 class="mb-3">🏆 Certificados y Cursos</h4>
-                        
-                            <div class="d-flex align-items-start mb-4"> <div class="fs-4 me-3">🧠</div>
-                                <div>
-                                    <h6 class="fw-bold mb-0">Proyectos Personales en IA</h6>
-                                    <small class="text-muted d-block mb-1">Aprendizaje Autodidacta</small>
-                                    <p class="small text-muted mb-0">Desarrollo independiente de modelos y análisis de datos en literatura y tecnología.</p>
-                                </div>
-                            </div>
-                            
-                        <h4 class="mt-4 mb-3">🗣️ Idiomas</h4>
-                            <div class="row text-muted mb-4">
-                                <div class="col-md-6 mb-2">
-                                    <strong class="text-dark">Español:</strong> Nativo
-                                </div>
-                                <div class="col-md-6 mb-2">
-                                    <strong class="text-dark">Inglés:</strong> Nivel Avanzado (C1)
-                                </div>
-                                </div>
-
-                        <h4 class="mt-4">🛠️ Habilidades Técnicas</h4>
-                        <div>
-                            <span class="badge bg-dark me-1">Python (Intermedio)</span>
-                            <span class="badge bg-dark me-1">Data Science</span>
-                            <span class="badge bg-dark me-1">SQL</span>
-                            <span class="badge bg-dark me-1">TensorFlow</span>
-                            <span class="badge bg-dark me-1">Prompt Engineering</span>
-                            <span class="badge bg-dark me-1">Data Visualization</span>
-                            <span class="badge bg-dark me-1">CAD</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="text-end mt-3">
-                    <a href="{% static 'portfolio/Currículum Vitae Marcos Caballero Nieto.pdf' %}" class="btn btn-dark" target="_blank">📄 Descargar CV (PDF)</a>
-                </div>
-
-            {% else %}
-            
-                <div class="card shadow-sm">
-                    <div class="card-body p-5">
-                        <h1 class="mb-4">About Me</h1>
                         <p class="lead">I am an 18-year-old with a strong passion for artificial intelligence, programming, and data analysis. Through self-driven learning and practical experience, I've developed skills in Python (intermediate), SQL, and TensorFlow.</p>
                         <p class="lead">I am currently studying Biomedical and Mechanical Engineering while working as an AI Corrector and Prompt Engineer, focusing on reviewing and improving AI-generated content. My curiosity and problem-solving mindset make me a great fit for roles related to AI, data, and software development.</p>
-                        <hr>
+                        <hr class="my-4">
 
                         <h4 class="mb-3">💼 Work Experience</h4>
 
-                            <div class="mb-4">
-                                <div class="d-flex justify-content-between align-items-start flex-column flex-md-row">
-                                    <div>
-                                        <h5 class="fw-bold mb-0">AI Corrector / Prompt Engineer</h5>
-                                        <p class="text-primary fw-bold mb-1">Outlier.ai</p>
-                                    </div>
-                                    <span class="badge bg-light text-dark border">2024 - Present</span>
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between align-items-start flex-column flex-md-row">
+                                <div>
+                                    <h5 class="fw-bold mb-0">AI Corrector / Prompt Engineer</h5>
+                                    <p class="text-primary fw-bold mb-1">Outlier.ai</p>
                                 </div>
-                                <p class="text-muted small mb-2">Remote / Madrid, Spain</p>
-                                <ul>
-                                    <li>Reviewed and corrected AI-generated educational content to ensure accuracy, clarity, and tone.</li>
-                                    <li>Designed prompts and test cases for Large Language Models (LLMs).</li>
-                                    <li>Collaborated with linguists and engineers to improve AI-human interaction.</li>
-                                    <li>Worked with AI systems to ensure culturally and linguistically appropriate outputs.</li>
-                                    <li>Gained hands-on experience in applied NLP and prompt evaluation.</li>
-                                </ul>
+                                <span class="badge bg-light text-dark border">2024 - Present</span>
                             </div>
+                            <p class="text-muted small mb-2">Remote / Madrid, Spain</p>
+                            <ul>
+                                <li>Reviewed and corrected AI-generated educational content to ensure accuracy, clarity, and tone.</li>
+                                <li>Designed prompts and test cases for Large Language Models (LLMs).</li>
+                                <li>Collaborated with linguists and engineers to improve AI-human interaction.</li>
+                                <li>Worked with AI systems to ensure culturally and linguistically appropriate outputs.</li>
+                                <li>Gained hands-on experience in applied NLP and prompt evaluation.</li>
+                            </ul>
+                        </div>
 
-                            <div class="mb-4">
-                                <div class="d-flex justify-content-between align-items-start flex-column flex-md-row">
-                                    <div>
-                                        <h5 class="fw-bold mb-0">Cambridge Exam Supervisor</h5>
-                                        <p class="text-primary fw-bold mb-1">Cambridge Assessment English</p>
-                                    </div>
-                                    <span class="badge bg-light text-dark border">2024 - Present</span>
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between align-items-start flex-column flex-md-row">
+                                <div>
+                                    <h5 class="fw-bold mb-0">Cambridge Exam Supervisor</h5>
+                                    <p class="text-primary fw-bold mb-1">Cambridge Assessment English</p>
                                 </div>
-                                <p class="text-muted small mb-2">Madrid, Spain</p>
-                                <ul>
-                                    <li>Assisted in exam coordination and supervision.</li>
-                                    <li>Supported students during the exam process in a multilingual setting.</li>
-                                </ul>
+                                <span class="badge bg-light text-dark border">2024 - Present</span>
                             </div>
-                            <hr class="my-4">
+                            <p class="text-muted small mb-2">Madrid, Spain</p>
+                            <ul>
+                                <li>Assisted in exam coordination and supervision.</li>
+                                <li>Supported students during the exam process in a multilingual setting.</li>
+                            </ul>
+                        </div>
+                        <hr class="my-4">
                                                     
                         <h4 class="mb-3">🎓 Education</h4>
                         
@@ -407,49 +198,295 @@
 
                         <h4 class="mb-3">🏆 Certificates & Projects</h4>
                             
-                            <div class="d-flex align-items-start mb-4">
-                                <div class="fs-4 me-3">🧠</div>
-                                <div>
-                                    <h6 class="fw-bold mb-0">Personal AI Projects</h6>
-                                    <small class="text-muted d-block mb-1">Self-driven Learning</small>
-                                    <p class="small text-muted mb-0">Development of personal learning projects in literature and technology using AI.</p>
-                                </div>
+                        <div class="d-flex align-items-start mb-4">
+                            <div class="fs-4 me-3">🧠</div>
+                            <div>
+                                <h6 class="fw-bold mb-0">Personal AI Projects</h6>
+                                <small class="text-muted d-block mb-1">Self-driven Learning</small>
+                                <p class="small text-muted mb-0">Development of personal learning projects in literature and technology using AI.</p>
                             </div>
-                        
+                        </div>
+                    
                         <h4 class="mt-4 mb-3">🗣️ Languages</h4>
-                            <div class="row text-muted mb-4">
-                                <div class="col-md-6 mb-2">
-                                    <strong class="text-dark">Spanish:</strong> Native
-                                </div>
-                                <div class="col-md-6 mb-2">
-                                    <strong class="text-dark">English:</strong> Advanced Level (C1)
-                                </div>
+                        <div class="row text-muted mb-4">
+                            <div class="col-md-6 mb-2">
+                                <strong class="text-dark">Spanish:</strong> Native
                             </div>
+                            <div class="col-md-6 mb-2">
+                                <strong class="text-dark">English:</strong> Advanced Level (C1)
+                            </div>
+                        </div>
 
                         <h4 class="mt-4">🛠️ Technical Skills</h4>
-                            <div>
-                                <span class="badge bg-dark me-1">Python (Intermediate)</span>
-                                <span class="badge bg-dark me-1">Data Science</span>
-                                <span class="badge bg-dark me-1">SQL</span>
-                                <span class="badge bg-dark me-1">TensorFlow</span>
-                                <span class="badge bg-dark me-1">Prompt Engineering</span>
-                                <span class="badge bg-dark me-1">Data Visualization</span>
-                                <span class="badge bg-dark me-1">CAD</span>
-                            </div>
+                        <div>
+                            <span class="badge bg-dark me-1">Python (Intermediate)</span>
+                            <span class="badge bg-dark me-1">Data Science</span>
+                            <span class="badge bg-dark me-1">SQL</span>
+                            <span class="badge bg-dark me-1">TensorFlow</span>
+                            <span class="badge bg-dark me-1">Prompt Engineering</span>
+                            <span class="badge bg-dark me-1">Data Visualization</span>
+                            <span class="badge bg-dark me-1">CAD</span>
+                        </div>
+
+                        <div class="text-center mt-5">
+                            <a href="{% static 'portfolio/Currículum Vitae Marcos Caballero Nieto.pdf' %}" class="btn btn-dark btn-lg" target="_blank">
+                                <i class="fas fa-file-download me-2"></i> Download Resume (PDF)
+                            </a>
+                        </div>
                     </div>
-                </div>
 
-                <div class="text-end mt-3">
-                    <a href="{% static 'portfolio/Currículum Vitae Marcos Caballero Nieto.pdf' %}" class="btn btn-dark" target="_blank">📄 Download Resume (PDF)</a>
-                </div>
+                    <div id="spanish-content" style="display: none;">
+                        <h1 class="mb-4 fw-bold">Sobre Mí</h1>
+                        
+                        <p class="lead">Soy Marcos Caballero, un estudiante de 18 años con una gran pasión por la inteligencia artificial, la programación y el análisis de datos. A través del aprendizaje autodidacta y la experiencia práctica, he desarrollado habilidades en Python, SQL y TensorFlow.</p>
+                        <p class="lead">Actualmente compagino mis estudios en Ingeniería Biomédica e Ingeniería Mecánica con experiencia profesional real. He trabajado como AI Corrector e Ingeniero de Prompts, enfocándome en revisar y mejorar contenido generado por IA. Mi curiosidad y mentalidad resolutiva me hacen encajar perfectamente en roles relacionados con la IA, los datos y el desarrollo de software.</p>
+                        <hr class="my-4">
 
-            {% endif %}
+                        <h4 class="mb-3">💼 Experiencia Laboral</h4>
+
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between align-items-start flex-column flex-md-row">
+                                <div>
+                                    <h5 class="fw-bold mb-0">AI Corrector / Prompt Engineer</h5>
+                                    <p class="text-primary fw-bold mb-1">Outlier.ai</p>
+                                </div>
+                                <span class="badge bg-light text-dark border">2024 - Presente</span>
+                            </div>
+                            <p class="text-muted small mb-2">Remoto / Madrid, España</p>
+                            <ul>
+                                <li>Revisión y corrección de contenido educativo generado por IA para asegurar precisión, claridad y tono adecuado.</li>
+                                <li>Diseño de prompts y casos de prueba para Grandes Modelos de Lenguaje (LLMs).</li>
+                                <li>Colaboración con lingüistas e ingenieros para mejorar la interacción humano-IA.</li>
+                                <li>Trabajo con sistemas de IA para asegurar respuestas cultural y lingüísticamente apropiadas.</li>
+                            </ul>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between align-items-start flex-column flex-md-row">
+                                <div>
+                                    <h5 class="fw-bold mb-0">Supervisor de Exámenes Cambridge</h5>
+                                    <p class="text-primary fw-bold mb-1">Cambridge Assessment English</p>
+                                </div>
+                                <span class="badge bg-light text-dark border">2024 - Presente</span>
+                            </div>
+                            <p class="text-muted small mb-2">Madrid, España</p>
+                            <ul>
+                                <li>Asistencia en la coordinación y supervisión de exámenes oficiales.</li>
+                                <li>Apoyo a estudiantes durante el proceso de evaluación en un entorno multilingüe.</li>
+                            </ul>
+                        </div>
+                    
+                        <h4 class="mb-3">🎓 Educación</h4>
+                    
+                        <div class="mb-5 border-start border-4 border-primary ps-3">
+                            <div class="d-flex justify-content-between align-items-baseline">
+                                <h5 class="fw-bold text-primary mb-1">Grado en Ingeniería Biomédica (Inglés)</h5>
+                                <span class="badge bg-primary">2024 - Presente</span>
+                            </div>
+                            <p class="text-muted fw-bold mb-2">Universidad Rey Juan Carlos (Campus Fuenlabrada)</p>
+                            
+                            <p class="mb-3">
+                                Enfoque en aplicaciones de IA en medicina y biología. Proyectos de simulación, modelado y técnicas básicas de Machine Learning para datos sanitarios.
+                            </p>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <div class="p-3 bg-light rounded h-100">
+                                        <h6 class="fw-bold text-success">🚀 Utilidad Profesional</h6>
+                                        <ul class="small mb-0 ps-3">
+                                            <li>Diseño de dispositivos médicos y electromedicina.</li>
+                                            <li>Sistemas de información hospitalaria (eHealth).</li>
+                                            <li>Análisis de Big Data clínico y Bioinformática.</li>
+                                            <li>Investigación y desarrollo farmacéutico.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-3 bg-light rounded h-100">
+                                        <h6 class="fw-bold text-dark">🛠️ Competencias Clave</h6>
+                                        <div class="d-flex flex-wrap gap-1">
+                                            <span class="badge bg-white text-dark border">Python (Data Science)</span>
+                                            <span class="badge bg-white text-dark border">Procesado de Señales</span>
+                                            <span class="badge bg-white text-dark border">Bioestadística</span>
+                                            <span class="badge bg-white text-dark border">IA & Machine Learning</span>
+                                            <span class="badge bg-white text-dark border">Álgebra Lineal</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h6 class="fw-bold mt-3">📚 Estructura del Plan de Estudios</h6>
+                            <div class="accordion accordion-flush" id="accordionCurriculumBioEs">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="flush-headingOneBioEs">
+                                        <button class="accordion-button collapsed py-2 bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOneBioEs">
+                                            <small class="fw-bold">Ver desglose por cursos</small>
+                                        </button>
+                                    </h2>
+                                    <div id="flush-collapseOneBioEs" class="accordion-collapse collapse" data-bs-parent="#accordionCurriculumBioEs">
+                                        <div class="accordion-body small">
+                                            <div class="row">
+                                                <div class="col-md-6 mb-2">
+                                                    <strong>1º Curso (Fundamentos):</strong> Cálculo, Álgebra, Física, Anatomía Humana, Programación, Bioquímica.
+                                                </div>
+                                                <div class="col-md-6 mb-2">
+                                                    <strong>2º Curso (Ingeniería Core):</strong> Redes, Fisiología, Electrónica (Analógica/Digital), Estadística, Sistemas Lineales.
+                                                </div>
+                                                <div class="col-md-6 mb-2">
+                                                    <strong>3º Curso (Especialización):</strong> Equipamiento Biomédico, Bases de Datos, Procesado de Señales, Ingeniería Hospitalaria, Farmacología.
+                                                </div>
+                                                <div class="col-md-6 mb-2">
+                                                    <strong>4º Curso (Profesionalización):</strong> Inteligencia Artificial, Bioinformática, Biomateriales, Imagen Médica, Big Data, Prácticas Externas.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-5 border-start border-4 border-danger ps-3">
+                            <div class="d-flex justify-content-between align-items-baseline">
+                                <h5 class="fw-bold text-danger mb-1">Grado en Ingeniería Mecánica</h5>
+                                <span class="badge bg-danger">2024 - Presente</span>
+                            </div>
+                            <p class="text-muted fw-bold mb-2">UNED (Universidad Nacional de Educación a Distancia)</p>
+                            
+                            <p class="mb-3">
+                                Enfoque en diseño, análisis y optimización de sistemas mecánicos. Proyectos que incluyen simulaciones computacionales, análisis estructural y diseño mecánico.
+                            </p>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <div class="p-3 bg-light rounded h-100">
+                                        <h6 class="fw-bold text-success">🚀 Utilidad Profesional</h6>
+                                        <ul class="small mb-0 ps-3">
+                                            <li>Diseño y cálculo de maquinaria y vehículos.</li>
+                                            <li>Dirección de proyectos y plantas industriales.</li>
+                                            <li>Gestión energética y energías renovables.</li>
+                                            <li>Cálculo de estructuras y construcción industrial.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-3 bg-light rounded h-100">
+                                        <h6 class="fw-bold text-dark">🛠️ Competencias Clave</h6>
+                                        <div class="d-flex flex-wrap gap-1">
+                                            <span class="badge bg-white text-dark border">Termodinámica</span>
+                                            <span class="badge bg-white text-dark border">Mecánica de Fluidos</span>
+                                            <span class="badge bg-white text-dark border">Ciencia de Materiales</span>
+                                            <span class="badge bg-white text-dark border">CAD (SolidWorks/CATIA)</span>
+                                            <span class="badge bg-white text-dark border">Tecnología Fabricación</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h6 class="fw-bold mt-3">📚 Estructura del Plan de Estudios</h6>
+                            <div class="accordion accordion-flush" id="accordionCurriculumMecEs">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="flush-headingOneMecEs">
+                                        <button class="accordion-button collapsed py-2 bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOneMecEs">
+                                            <small class="fw-bold">Ver desglose de materias</small>
+                                        </button>
+                                    </h2>
+                                    <div id="flush-collapseOneMecEs" class="accordion-collapse collapse" data-bs-parent="#accordionCurriculumMecEs">
+                                        <div class="accordion-body small">
+                                            <div class="row">
+                                                <div class="col-md-12 mb-2">
+                                                    <strong>Materias Básicas:</strong> Matemáticas, Física, Química, Expresión Gráfica, Informática, Estadística, Empresa.
+                                                </div>
+                                                <div class="col-md-12 mb-2">
+                                                    <strong>Materias Fundamentales:</strong> Mecánica del Sólido, Elasticidad y Resistencia de Materiales, Ingeniería Térmica, Mecánica de Fluidos, Teoría de Máquinas.
+                                                </div>
+                                                <div class="col-md-12 mb-2">
+                                                    <strong>Tecnología Específica:</strong> Tecnología Mecánica, Cálculo y Diseño de Máquinas, Estructuras y Construcciones Industriales, Ingeniería de Materiales.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4 class="mb-3">🏆 Certificados y Cursos</h4>
+                        
+                        <div class="d-flex align-items-start mb-4"> <div class="fs-4 me-3">🧠</div>
+                            <div>
+                                <h6 class="fw-bold mb-0">Proyectos Personales en IA</h6>
+                                <small class="text-muted d-block mb-1">Aprendizaje Autodidacta</small>
+                                <p class="small text-muted mb-0">Desarrollo independiente de modelos y análisis de datos en literatura y tecnología.</p>
+                            </div>
+                        </div>
+                        
+                        <h4 class="mt-4 mb-3">🗣️ Idiomas</h4>
+                        <div class="row text-muted mb-4">
+                            <div class="col-md-6 mb-2">
+                                <strong class="text-dark">Español:</strong> Nativo
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <strong class="text-dark">Inglés:</strong> Nivel Avanzado (C1)
+                            </div>
+                        </div>
+
+                        <h4 class="mt-4">🛠️ Habilidades Técnicas</h4>
+                        <div>
+                            <span class="badge bg-dark me-1">Python (Intermedio)</span>
+                            <span class="badge bg-dark me-1">Data Science</span>
+                            <span class="badge bg-dark me-1">SQL</span>
+                            <span class="badge bg-dark me-1">TensorFlow</span>
+                            <span class="badge bg-dark me-1">Prompt Engineering</span>
+                            <span class="badge bg-dark me-1">Data Visualization</span>
+                            <span class="badge bg-dark me-1">CAD</span>
+                        </div>
+
+                        <div class="text-center mt-5">
+                            <a href="{% static 'portfolio/Currículum Vitae Marcos Caballero Nieto.pdf' %}" class="btn btn-dark btn-lg" target="_blank">
+                                <i class="fas fa-file-download me-2"></i> Descargar CV (PDF)
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
             
-            <div class="mt-5 text-center">
-                <a href="{% url 'home' %}" class="text-decoration-none text-dark">&larr; {% if language == 'es' %}Volver al Inicio{% else %}Back to Home{% endif %}</a>
+            <div class="mt-4 text-center">
+                <a href="{% url 'home' %}" class="text-decoration-none text-muted" id="back-link">&larr; Back to Home</a>
             </div>
 
         </div>
     </div>
+
+    <script>
+            function showEnglish() {
+                // 1. Mostrar contenido Inglés / Ocultar Español
+                document.getElementById('english-content').style.display = 'block';
+                document.getElementById('spanish-content').style.display = 'none';
+                
+                // 2. FORZAR estilos de botones (Sobrescribir clases)
+                // Inglés -> Negro Sólido (btn-dark)
+                document.getElementById('btn-en').className = 'btn btn-dark px-4';
+                // Español -> Borde Negro (btn-outline-dark)
+                document.getElementById('btn-es').className = 'btn btn-outline-dark px-4';
+
+                // 3. Texto del enlace
+                document.getElementById('back-link').innerHTML = '&larr; Back to Home';
+            }
+
+            function showSpanish() {
+                // 1. Mostrar contenido Español / Ocultar Inglés
+                document.getElementById('spanish-content').style.display = 'block';
+                document.getElementById('english-content').style.display = 'none';
+                
+                // 2. FORZAR estilos de botones (Sobrescribir clases)
+                // Inglés -> Borde Negro (btn-outline-dark)
+                document.getElementById('btn-en').className = 'btn btn-outline-dark px-4';
+                // Español -> Negro Sólido (btn-dark)
+                document.getElementById('btn-es').className = 'btn btn-dark px-4';
+
+                // 3. Texto del enlace
+                document.getElementById('back-link').innerHTML = '&larr; Volver al Inicio';
+            }
+        </script>
 
 {% endblock %}
