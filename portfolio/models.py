@@ -1,4 +1,5 @@
 from django.db import models
+from django_ckeditor_5.fields import CKEditor5Field
 
 # Create your models here.
 
@@ -13,7 +14,7 @@ class Category(models.Model):
 
 class Project(models.Model):
     title = models.CharField(max_length=200)
-    description = models.TextField()
+    description = CKEditor5Field('Description', config_name='default')
     image = models.ImageField(upload_to='projects/')
     url = models.URLField(blank=True)
     github_url = models.URLField(blank=True)

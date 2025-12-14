@@ -12,7 +12,9 @@
                 <img src="{{ project.image.url }}" alt="{{ project.title }}" class="img-fluid rounded mb-4 shadow-sm">
             {% endif %}
 
-            <p class="lead mb-5" style="white-space: pre-wrap;">{{ project.description|linebreaks }}</p>
+            <div class="lead mb-5">
+                {{ project.description|safe }}
+            </div>
 
             <div class="mb-4">
                 {% if project.url %}
