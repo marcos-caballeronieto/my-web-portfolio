@@ -47,4 +47,33 @@
         </div>
     </div>
 
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        
+        mermaid.initialize({ startOnLoad: false });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            // 1. Busca todos los bloques de código que CKEditor marcó como 'language-mermaid'
+            const mermaidBlocks = document.querySelectorAll('code.language-mermaid');
+
+            mermaidBlocks.forEach((block, index) => {
+                // 2. Extrae el código del diagrama
+                const content = block.textContent;
+                
+                // 3. Crea un div nuevo para el diagrama
+                const div = document.createElement('div');
+                div.classList.add('mermaid');
+                div.textContent = content;
+                div.id = `mermaid-chart-${index}`; // ID único
+                
+                // 4. Reemplaza el bloque de código feo (<pre>) por el div bonito
+                const preElement = block.parentElement; // CKEditor envuelve el code en un pre
+                preElement.replaceWith(div);
+            });
+
+            // 5. Dile a Mermaid que dibuje todo
+            mermaid.run();
+        });
+    </script>
+
 {% endblock %}
