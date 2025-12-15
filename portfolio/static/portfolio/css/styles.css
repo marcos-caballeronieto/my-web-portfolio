@@ -1,0 +1,178 @@
+/* IMPORTAR FUENTES DE GOOGLE (Montserrat para títulos, Lato para texto) */
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Montserrat:wght@400;600;800&display=swap');
+
+/* === 1. TIPOGRAFÍA GLOBAL === */
+/* Opción 1: Degradado Suave */
+body {
+    font-family: 'Lato', sans-serif;
+    color: #2c3e50;
+    
+    background-color: #ffffff;
+    /* Un degradado vertical muy sutil que baja hacia un gris azulado casi blanco */
+    background-image: linear-gradient(to bottom, #ffffff 0%, #f3f4f6 100%);
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* El fondo se queda fijo al hacer scroll (efecto moderno) */
+}
+
+h1, h2, h3, h4, h5, h6, .navbar-brand {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700; /* Negrita fuerte para impacto */
+    letter-spacing: -0.5px; /* Un toque moderno */
+}
+
+/* === 2. NAVBAR (Barra Premium con Línea Metálica) === */
+.navbar {
+    background-color: #1a1a1a !important;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2); /* Sombra un pelín más marcada */
+    
+    /* TECH LINE (Estilo Acero/Titanio) */
+    border-bottom: 2px solid transparent;
+    /* Degradado: Gris Oscuro -> Plata Claro -> Gris Oscuro */
+    border-image: linear-gradient(to right, #343a40, #ced4da, #343a40) 1;
+}
+
+/* Enlaces de la barra */
+.navbar-dark .navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.75); /* Blanco ligeramente apagado para no cansar la vista */
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+/* Efecto Hover en los enlaces (se vuelven blanco puro) */
+.navbar-dark .navbar-nav .nav-link:hover,
+.navbar-dark .navbar-nav .nav-link.active {
+    color: #ffffff !important;
+    transform: translateY(-1px);
+}
+
+/* Marca (Logo) */
+.navbar-brand {
+    color: #ffffff !important;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+
+/* === 3. TARJETAS DE PROYECTOS (El efecto WOW) === */
+.card {
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    border: 1px solid rgba(0,0,0,0.05) !important; /* Borde casi invisible */
+    overflow: hidden; /* Para que la imagen no se salga al hacer zoom */
+}
+
+/* Al pasar el ratón, la tarjeta sube y gana sombra */
+.card:hover {
+    transform: translateY(-8px); /* Sube 8 píxeles */
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
+}
+
+/* Efecto de zoom suave en la imagen */
+.card-img-top {
+    transition: transform 0.5s ease;
+}
+.card:hover .card-img-top {
+    transform: scale(1.05); /* Zoom sutil del 5% */
+}
+
+/* === 4. BOTONES === */
+.btn {
+    border-radius: 50px; /* Botones redondos tipo "píldora" */
+    font-weight: 600;
+    padding: 0.5rem 1.5rem;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+.btn-dark:hover {
+    background-color: #000;
+    transform: translateY(-2px); /* Pequeño salto al pulsar */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* === 5. ANIMACIONES DE ENTRADA (Fade In Up) === */
+/* Clase para animar elementos al cargar la página */
+.animate-up {
+    animation: fadeInUp 0.8s ease-out forwards;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+/* Retrasos para que aparezcan uno tras otro (efecto cascada) */
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* === 6. MERMAID DIAGRAMS (Estilo) === */
+.mermaid {
+    display: flex;
+    justify-content: center;
+    margin: 2rem 0;
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+/* === 7. TEXTO DEGRADADO (Para el H1 de Home) === */
+/* Opción A: Titanio (Elegante y Mecánico) */
+.text-gradient {
+    /* Forzamos que el fondo ocupe solo lo que ocupan las letras */
+    display: inline-block; 
+    
+    /* Degradado horizontal: Negro Intenso -> Gris Plata */
+    background: linear-gradient(to right, #000000 0%, #8e9eab 100%);
+    
+    /* Recortar el fondo con la forma del texto */
+    -webkit-background-clip: text;
+    background-clip: text;
+    
+    /* Hacer el texto transparente para ver el fondo */
+    -webkit-text-fill-color: transparent;
+    color: transparent; /* Fallback */
+}
+
+/* =========================================
+   8. PERSONALIZACIÓN DE LA BARRA DE SCROLL
+   ========================================= */
+
+/* --- Para Firefox --- */
+html {
+    scrollbar-width: thin; /* Hace la barra más delgada */
+    /* color del pulgar | color de la pista (fondo) */
+    scrollbar-color: #555 #1a1a1a; 
+}
+
+/* --- Para Chrome, Edge, Safari (Webkit) --- */
+
+/* 1. El ancho total de la barra */
+::-webkit-scrollbar {
+    width: 10px; /* Delgada pero fácil de agarrar */
+}
+
+/* 2. La pista (el fondo por donde se mueve) */
+::-webkit-scrollbar-track {
+    background: #1a1a1a; /* Se funde con el fondo oscuro de la web */
+    /* Opcional: si prefieres que se note un poco la pista, usa: background: #252525; */
+}
+
+/* 3. El pulgar (la parte que mueves) */
+::-webkit-scrollbar-thumb {
+    background-color: #555; /* Gris oscuro elegante */
+    border-radius: 10px;    /* Bordes totalmente redondeados */
+    border: 2px solid #1a1a1a; /* Crea un margen "invisible" alrededor para que parezca más flotante */
+}
+
+/* 4. El pulgar al pasar el ratón por encima (Hover) */
+::-webkit-scrollbar-thumb:hover {
+    background-color: #777; /* Se ilumina ligeramente para dar feedback */
+}

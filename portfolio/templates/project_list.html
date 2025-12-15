@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1 class="mb-4">All Projects I have made</h1>
+    <h1 class="mb-4">All Of My Projects</h1>
 
     <div class="text-center mb-4">
         <a href="{% url 'project_list' %}" 
@@ -22,20 +22,24 @@
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             {% for project in projects %}
                 <div class="col">
-                    <div class="card h-100 shadow-sm border-0">
+                    <div class="card h-100 shadow-sm border-0 project-card">
+                        
                         {% if project.image %}
                             <img src="{{ project.image.url }}" class="card-img-top" alt="{{ project.title }}" style="height: 200px; object-fit: cover;">
                         {% endif %}
                         
                         <div class="card-body d-flex flex-column">
                             <h5 class="card-title">
-                                <a href="{% url 'project_detail' project.pk %}" class="text-decoration-none text-dark fw-bold">
+                                <a href="{% url 'project_detail' project.pk %}" class="text-decoration-none text-dark fw-bold stretched-link">
                                     {{ project.title }}
                                 </a>
                             </h5>
-                            <p class="card-text text-muted">{{ project.short_description|truncatewords:20 }}</p>
                             
-                            <a href="{% url 'project_detail' project.pk %}" class="btn btn-dark mt-auto">View details</a>
+                            <p class="card-text text-muted">{{ project.short_description|striptags|truncatewords:20 }}</p>
+                            
+                            <div class="mt-auto">
+                                <span class="btn btn-dark btn-sm rounded-pill">View Details</span>
+                            </div>
                         </div>
                     </div>
                 </div>
