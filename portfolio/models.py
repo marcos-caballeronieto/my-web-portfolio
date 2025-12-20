@@ -32,3 +32,20 @@ class Project(models.Model):
     def __str__(self):
         return self.title
     
+
+class Certificate(models.Model):
+    icon = models.CharField(max_length=10, default='📜', verbose_name="Icon/Emoji")
+    title = models.CharField(max_length=200, verbose_name="Title")
+    subtitle = models.CharField(max_length=200, verbose_name="Subtitle / Organization")
+    description = models.TextField(verbose_name="Description")
+    date = models.DateField(verbose_name="Date Obtained")
+    url = models.URLField(blank=True, null=True, verbose_name="Link (Optional)")
+
+    class Meta:
+        ordering = ['-date'] # Automatically order by date descending
+        verbose_name = "Certificate / Project"
+        verbose_name_plural = "Certificates & Projects"
+
+    def __str__(self):
+        return self.title
+    

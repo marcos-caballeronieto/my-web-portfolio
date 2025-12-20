@@ -1,20 +1,26 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Project, Category
+from .models import Project, Category, Certificate
 
 # Create your views here.
 
 def home(request):
     featured_projects = Project.objects.filter(is_featured=True)
     latest_projects = Project.objects.filter(is_featured=False).order_by('-pk')
+    certificates = Certificate.objects.all()
     context = {
         'featured_projects': featured_projects,
         'latest_projects': latest_projects,
+        'certificates': certificates,
     }
     return render(request, './home.html', context)
 
 def about(request):
     language = request.GET.get('lang', 'en')
-    context = {'language': language}
+    certificates = Certificate.objects.all()
+    context = {
+        'language': language,
+        'certificates': certificates,
+               }
     return render(request, './about.html', context)
 
 def project_detail(request, pk):
