@@ -142,34 +142,16 @@ h1, h2, h3, h4, h5, h6, .navbar-brand {
 }
 
 /* =========================================
-   8. SCROLLBAR "TECH RAIL" (Integración Oscura)
+   8. SCROLLBAR INVISIBLE (Clean Look)
    ========================================= */
 
-/* --- Firefox --- */
+/* Para Chrome, Safari, Edge y Opera */
+html::-webkit-scrollbar {
+    display: none; /* Oculta el elemento visualmente */
+}
+
+/* Para Firefox, IE y Edge antiguo */
 html {
-    scrollbar-width: thin;
-    scrollbar-color: #555 #1a1a1a; /* Pulgar | Fondo Oscuro */
-}
-
-/* --- Chrome, Edge, Safari --- */
-::-webkit-scrollbar {
-    width: 10px; /* Ancho suficiente para parecer estructural */
-}
-
-/* 1. EL RIEL (TRACK): Oscuro para que se una a la Navbar */
-::-webkit-scrollbar-track {
-    background: #1a1a1a; /* El mismo color que tu Navbar y Logo */
-    border-left: 1px solid #333; /* Un borde sutil para separarlo del contenido blanco */
-}
-
-/* 2. EL PULGAR (THUMB): Metálico */
-::-webkit-scrollbar-thumb {
-    background-color: #7f8c8d; /* Gris metalizado */
-    border-radius: 5px;       /* Ligeramente redondeado */
-    border: 2px solid #1a1a1a; /* Margen para que "flote" dentro del riel */
-}
-
-/* 3. INTERACCIÓN */
-::-webkit-scrollbar-thumb:hover {
-    background-color: #d4af37; /* Se ilumina en ORO al tocarlo (Detalle Premium) */
+    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none;  /* IE y Edge */
 }
