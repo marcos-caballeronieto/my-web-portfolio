@@ -17,7 +17,6 @@
     <link rel="stylesheet" href="{% static 'portfolio/css/styles.css' %}">
 
     <style>
-        /* Mantengo tus estilos específicos para iconos sociales por si acaso */
         .social-icon {
             transition: transform 0.3s ease, color 0.3s ease;
             display: inline-block;
@@ -117,11 +116,13 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
     <script type="module">
+        // Initialize Mermaid for rendering diagrams
         import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
         
         mermaid.initialize({ startOnLoad: false });
 
         document.addEventListener("DOMContentLoaded", function() {
+            // Find all Mermaid code blocks and convert them to rendered diagrams
             const mermaidBlocks = document.querySelectorAll('code.language-mermaid');
             mermaidBlocks.forEach((block, index) => {
                 const content = block.textContent;
@@ -138,6 +139,7 @@
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 
     <script>
+        // Configure particles.js for background animation effect
         particlesJS("particles-js", {
             "particles": {
                 "number": {
@@ -148,7 +150,6 @@
                     }
                 },
                 "color": {
-                    /* AQUÍ ESTÁ EL CAMBIO: Solo tonos de gris metálico */
                     "value": ["#bdc3c7", "#95a5a6", "#7f8c8d"] 
                 },
                 "shape": {
@@ -181,8 +182,8 @@
                 "line_linked": {
                     "enable": true,
                     "distance": 150,
-                    "color": "#d4af37", /* Mantenemos el ORO en las conexiones */
-                    "opacity": 0.3, /* Un pelín más visibles para contrastar con el gris */
+                    "color": "#d4af37",
+                    "opacity": 0.3,
                     "width": 1
                 },
                 "move": {

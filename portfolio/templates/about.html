@@ -479,33 +479,35 @@
     </div>
 
     <script>
+            // Function to display English content and update UI elements
             function showEnglish() {
-                // 1. Mostrar contenido Inglés / Ocultar Español
+                // Show English content and hide Spanish content
                 document.getElementById('english-content').style.display = 'block';
                 document.getElementById('spanish-content').style.display = 'none';
                 
-                // 2. FORZAR estilos de botones (Sobrescribir clases)
-                // Inglés -> Negro Sólido (btn-dark)
+                // Force button styles (override Bootstrap classes)
+                // English button -> Solid dark (btn-dark)
                 document.getElementById('btn-en').className = 'btn btn-dark px-4';
-                // Español -> Borde Negro (btn-outline-dark)
+                // Spanish button -> Dark outline (btn-outline-dark)
                 document.getElementById('btn-es').className = 'btn btn-outline-dark px-4';
 
-                // 3. Texto del enlace
+                // Update back link text to English
                 document.getElementById('back-link').innerHTML = '&larr; Back to Home';
             }
 
+            // Function to display Spanish content and update UI elements
             function showSpanish() {
-                // 1. Mostrar contenido Español / Ocultar Inglés
+                // Show Spanish content and hide English content
                 document.getElementById('spanish-content').style.display = 'block';
                 document.getElementById('english-content').style.display = 'none';
                 
-                // 2. FORZAR estilos de botones (Sobrescribir clases)
-                // Inglés -> Borde Negro (btn-outline-dark)
+                // Force button styles (override Bootstrap classes)
+                // English button -> Dark outline (btn-outline-dark)
                 document.getElementById('btn-en').className = 'btn btn-outline-dark px-4';
-                // Español -> Negro Sólido (btn-dark)
+                // Spanish button -> Solid dark (btn-dark)
                 document.getElementById('btn-es').className = 'btn btn-dark px-4';
 
-                // 3. Texto del enlace
+                // Update back link text to Spanish
                 document.getElementById('back-link').innerHTML = '&larr; Volver al Inicio';
             }
         </script>

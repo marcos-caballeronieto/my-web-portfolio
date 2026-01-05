@@ -1,6 +1,6 @@
 /* portfolio/static/portfolio/css/admin_ckeditor.css */
 
-/* Forzar variables de color para el editor */
+/* Force color variables for the editor */
 :root {
     --ck-color-base-foreground: #000000 !important;
     --ck-color-base-background: #ffffff !important;
@@ -8,13 +8,13 @@
     --ck-color-editor-base-text: #000000 !important;
 }
 
-/* Forzar fondo blanco y texto negro en el área de escritura */
+/* Force white background and black text in the writing area */
 .ck-editor__editable, .ck-content {
     background-color: white !important;
     color: black !important;
 }
 
-/* Asegurar que el código dentro de bloques también sea legible */
+/* Ensure that code within blocks is also legible */
 .ck-code-block pre {
     background-color: #f0f0f0 !important;
     color: #333 !important;

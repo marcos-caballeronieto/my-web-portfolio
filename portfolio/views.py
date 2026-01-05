@@ -4,6 +4,18 @@ from .models import Project, Category, Certificate
 # Create your views here.
 
 def home(request):
+    """
+    Renders the home page displaying featured projects, latest projects, and certificates.
+
+    Retrieves featured projects, non-featured projects ordered by ID descending,
+    and all certificates. Passes them to the home.html template.
+
+    Args:
+        request: The HTTP request object.
+
+    Returns:
+        HttpResponse: Rendered home.html template with context data.
+    """
     featured_projects = Project.objects.filter(is_featured=True)
     latest_projects = Project.objects.filter(is_featured=False).order_by('-pk')
     certificates = Certificate.objects.all()
@@ -15,6 +27,18 @@ def home(request):
     return render(request, './home.html', context)
 
 def about(request):
+    """
+    Renders the about page with language selection and certificates.
+
+    Retrieves the language from query parameters (default 'en') and all certificates.
+    Passes them to the about.html template.
+
+    Args:
+        request: The HTTP request object, may include 'lang' query parameter.
+
+    Returns:
+        HttpResponse: Rendered about.html template with context data.
+    """
     language = request.GET.get('lang', 'en')
     certificates = Certificate.objects.all()
     context = {
@@ -24,10 +48,36 @@ def about(request):
     return render(request, './about.html', context)
 
 def project_detail(request, pk):
+    """
+    Renders the detail page for a specific project.
+
+    Retrieves the project by primary key or returns 404 if not found.
+    Passes the project to the project_detail.html template.
+
+    Args:
+        request: The HTTP request object.
+        pk (int): The primary key of the project.
+
+    Returns:
+        HttpResponse: Rendered project_detail.html template with project data.
+    """
     project = get_object_or_404(Project, pk=pk)
     return render(request, './project_detail.html', {'project': project})
 
 def project_list(request):
+    """
+    Renders the project list page, optionally filtered by category.
+
+    If a category is specified in query parameters, filters projects by that category
+    and orders by relevance descending. Otherwise, shows all projects ordered by relevance.
+    Retrieves all categories for navigation.
+
+    Args:
+        request: The HTTP request object, may include 'category' query parameter.
+
+    Returns:
+        HttpResponse: Rendered project_list.html template with projects and categories.
+    """
     category_name = request.GET.get('category')
     if category_name:
         projects = Project.objects.filter(categories__name=category_name).order_by('-relevance')
