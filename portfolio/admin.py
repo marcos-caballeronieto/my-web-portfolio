@@ -17,4 +17,20 @@ class ProjectAdmin(admin.ModelAdmin):
 
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(Category)
-admin.site.register(Certificate)
+
+@admin.register(Certificate)
+class CertificateAdmin(admin.ModelAdmin):
+    fieldsets = (
+        ("General", {
+            "fields": ("icon", "date", "url")
+        }),
+        ("English", {
+            "fields": ("title_en", "subtitle_en", "description_en")
+        }),
+        ("Spanish", {
+            "fields": ("title_es", "subtitle_es", "description_es")
+        }),
+        ("Legacy/Default", {
+            "fields": ("title", "subtitle", "description")
+        }),
+    )

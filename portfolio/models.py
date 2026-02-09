@@ -50,6 +50,12 @@ class Certificate(models.Model):
     title = models.CharField(max_length=200, verbose_name="Title")
     subtitle = models.CharField(max_length=200, verbose_name="Subtitle / Organization")
     description = models.TextField(verbose_name="Description")
+    title_en = models.CharField(max_length=200, blank=True, verbose_name="Title (EN)")
+    title_es = models.CharField(max_length=200, blank=True, verbose_name="Title (ES)")
+    subtitle_en = models.CharField(max_length=200, blank=True, verbose_name="Subtitle / Organization (EN)")
+    subtitle_es = models.CharField(max_length=200, blank=True, verbose_name="Subtitle / Organization (ES)")
+    description_en = models.TextField(blank=True, verbose_name="Description (EN)")
+    description_es = models.TextField(blank=True, verbose_name="Description (ES)")
     date = models.DateField(verbose_name="Date Obtained")
     url = models.URLField(blank=True, null=True, verbose_name="Link (Optional)")
 
@@ -59,5 +65,5 @@ class Certificate(models.Model):
         verbose_name_plural = "Certificates & Projects"
 
     def __str__(self):
-        return self.title
+        return self.title_en or self.title_es or self.title
     
