@@ -8,10 +8,12 @@ class ProjectAdmin(admin.ModelAdmin):
     - Displays 'title' and 'is_featured' fields in the list view.
     - Allows inline editing of the 'is_featured' field.
     - Uses horizontal filter widget for the 'categories' and 'related_projects' many-to-many fields.
+    - Auto-generates slug from title.
     """
-    list_display = ('title', 'is_featured')
+    list_display = ('title', 'slug', 'is_featured')
     list_editable = ('is_featured',)
     filter_horizontal = ('categories', 'related_projects')
+    prepopulated_fields = {'slug': ('title',)}
 
 # Register your models here.
 

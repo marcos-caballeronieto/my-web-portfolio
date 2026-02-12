@@ -63,7 +63,7 @@
                                     <p class="card-text text-muted">{{ related_project.short_description }}</p>
                                 </div>
                                 <div class="card-footer bg-white border-top-0">
-                                    <a href="{% url 'project_detail' related_project.pk %}" class="btn btn-sm btn-dark w-100">
+                                    <a href="{% url 'project_detail' related_project.slug %}" class="btn btn-sm btn-dark w-100">
                                         View Project
                                     </a>
                                 </div>

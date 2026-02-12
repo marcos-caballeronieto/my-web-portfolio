@@ -47,22 +47,22 @@ def about(request):
                }
     return render(request, './about.html', context)
 
-def project_detail(request, pk):
+def project_detail(request, slug):
     """
     Renders the detail page for a specific project.
 
-    Retrieves the project by primary key or returns 404 if not found.
+    Retrieves the project by slug or returns 404 if not found.
     Also retrieves related projects to display them at the bottom.
     Passes the project and related_projects to the project_detail.html template.
 
     Args:
         request: The HTTP request object.
-        pk (int): The primary key of the project.
+        slug (str): The slug of the project.
 
     Returns:
         HttpResponse: Rendered project_detail.html template with project data.
     """
-    project = get_object_or_404(Project, pk=pk)
+    project = get_object_or_404(Project, slug=slug)
     related_projects = project.related_projects.all()
     return render(request, './project_detail.html', {
         'project': project,

@@ -22,6 +22,7 @@ class Project(models.Model):
     Includes details like title, description, images, URLs, and relevance.
     """
     title = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=200, unique=True, null=True, blank=True)
     short_description = models.TextField(default='No description', blank=True)
     description = CKEditor5Field('Description', config_name='default')
     image = models.ImageField(upload_to='projects/')
