@@ -141,6 +141,7 @@ CKEDITOR_5_CONFIGS = {
         'codeBlock': {
             'languages': [
                 {'language': 'plaintext', 'label': 'Plain text'},
+                {'language': 'markdown', 'label': 'Markdown'},
                 {'language': 'python', 'label': 'Python'},
                 {'language': 'javascript', 'label': 'JavaScript'},
                 {'language': 'html', 'label': 'HTML'},
