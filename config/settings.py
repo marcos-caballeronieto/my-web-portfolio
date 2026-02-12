@@ -148,10 +148,5 @@ CKEDITOR_5_CONFIGS = {
                 {'language': 'mermaid', 'label': 'Mermaid Diagram'},
             ]
         }
-
-    },
-    'comment': {
-        'toolbar': ['bold', 'italic', 'link'],
-    },
-
+    }
 }

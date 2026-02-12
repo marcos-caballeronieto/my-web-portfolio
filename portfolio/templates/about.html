@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load markdown_filters %}
 
 {% block content %}
 
@@ -209,7 +210,7 @@
                                             <small class="text-primary fw-bold d-block mb-1">
                                                 {{ cert.subtitle_en|default:cert.subtitle }} <span class="text-muted fw-light">| {{ cert.date|date:"M Y" }}</span>
                                             </small>
-                                            <p class="small text-muted mb-2">{{ cert.description_en|default:cert.description|safe }}</p>
+                                            <p class="small text-muted mb-2">{{ cert.description_en|default:cert.description|render_markdown|safe }}</p>
                                             
                                             {% if cert.url %}
                                             <a href="{{ cert.url }}" target="_blank" class="btn btn-sm btn-outline-dark py-0 px-2 mt-1" style="font-size: 0.75rem;">
@@ -442,7 +443,7 @@
                                             <small class="text-primary fw-bold d-block mb-1">
                                                 {{ cert.subtitle_es|default:cert.subtitle }} <span class="text-muted fw-light">| {{ cert.date|date:"M Y" }}</span>
                                             </small>
-                                            <p class="small text-muted mb-2">{{ cert.description_es|default:cert.description|safe }}</p>
+                                            <p class="small text-muted mb-2">{{ cert.description_es|default:cert.description|render_markdown|safe }}</p>
                                             
                                             {% if cert.url %}
                                             <a href="{{ cert.url }}" target="_blank" class="btn btn-sm btn-outline-dark py-0 px-2 mt-1" style="font-size: 0.75rem;">
