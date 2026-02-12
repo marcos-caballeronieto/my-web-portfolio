@@ -47,6 +47,34 @@
         </div>
     </div>
 
+    {% if related_projects %}
+        <div class="row justify-content-center mt-5">
+            <div class="col-lg-8">
+                <h3 class="fw-bold mb-4">Related Projects</h3>
+                <div class="row g-4">
+                    {% for related_project in related_projects %}
+                        <div class="col-md-6">
+                            <div class="card h-100 shadow-sm">
+                                {% if related_project.image %}
+                                    <img src="{{ related_project.image.url }}" alt="{{ related_project.title }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ related_project.title }}</h5>
+                                    <p class="card-text text-muted">{{ related_project.short_description }}</p>
+                                </div>
+                                <div class="card-footer bg-white border-top-0">
+                                    <a href="{% url 'project_detail' related_project.pk %}" class="btn btn-sm btn-dark w-100">
+                                        View Project
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
     <script type="module">
         import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
         

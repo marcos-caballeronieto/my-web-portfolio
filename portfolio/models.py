@@ -29,6 +29,7 @@ class Project(models.Model):
     github_url = models.URLField(blank=True)
     is_featured = models.BooleanField(default=False)
     categories = models.ManyToManyField(Category, related_name='projects')
+    related_projects = models.ManyToManyField('self', blank=True, symmetrical=True)
     class Relevance(models.IntegerChoices):
         VERY_LOW = 1, 'Very Low'
         LOW = 2, 'Low'

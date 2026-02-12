@@ -52,7 +52,8 @@ def project_detail(request, pk):
     Renders the detail page for a specific project.
 
     Retrieves the project by primary key or returns 404 if not found.
-    Passes the project to the project_detail.html template.
+    Also retrieves related projects to display them at the bottom.
+    Passes the project and related_projects to the project_detail.html template.
 
     Args:
         request: The HTTP request object.
@@ -62,7 +63,11 @@ def project_detail(request, pk):
         HttpResponse: Rendered project_detail.html template with project data.
     """
     project = get_object_or_404(Project, pk=pk)
-    return render(request, './project_detail.html', {'project': project})
+    related_projects = project.related_projects.all()
+    return render(request, './project_detail.html', {
+        'project': project,
+        'related_projects': related_projects
+    })
 
 def project_list(request):
     """

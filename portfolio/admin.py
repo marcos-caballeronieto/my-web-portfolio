@@ -7,11 +7,11 @@ class ProjectAdmin(admin.ModelAdmin):
 
     - Displays 'title' and 'is_featured' fields in the list view.
     - Allows inline editing of the 'is_featured' field.
-    - Uses horizontal filter widget for the 'categories' many-to-many field.
+    - Uses horizontal filter widget for the 'categories' and 'related_projects' many-to-many fields.
     """
     list_display = ('title', 'is_featured')
     list_editable = ('is_featured',)
-    filter_horizontal = ('categories',)
+    filter_horizontal = ('categories', 'related_projects')
 
 # Register your models here.
 
