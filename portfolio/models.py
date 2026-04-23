@@ -49,6 +49,7 @@ class Certificate(models.Model):
     Includes icon, title, subtitle, description, date, and optional URL.
     """
     icon = models.CharField(max_length=10, default='📜', verbose_name="Icon/Emoji")
+    icon_file = models.FileField(upload_to='certificates/icons/', blank=True, null=True, verbose_name="Icon SVG/PNG")
     title = models.CharField(max_length=200, verbose_name="Title")
     subtitle = models.CharField(max_length=200, verbose_name="Subtitle / Organization")
     description = CKEditor5Field(verbose_name="Description", config_name='default')

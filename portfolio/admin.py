@@ -24,7 +24,7 @@ admin.site.register(Category)
 class CertificateAdmin(admin.ModelAdmin):
     fieldsets = (
         ("General", {
-            "fields": ("icon", "date", "url")
+            "fields": ("icon", "icon_file", "date", "url")
         }),
         ("English", {
             "fields": ("title_en", "subtitle_en", "description_en")
