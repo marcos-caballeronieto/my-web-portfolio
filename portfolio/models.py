@@ -39,8 +39,66 @@ class Project(models.Model):
         VERY_HIGH = 5, 'Very High'
     relevance = models.IntegerField(choices=Relevance.choices, default=Relevance.MEDIUM)
 
+    class CoverType(models.TextChoices):
+        IMAGE = 'IMAGE', 'Static Image'
+        THREEJS = 'THREEJS', 'Three.js Animation'
+        HTML = 'HTML', 'Raw HTML Code'
+    
+    cover_type = models.CharField(
+        max_length=10, 
+        choices=CoverType.choices, 
+        default=CoverType.IMAGE,
+        help_text="Select what type of content to display as the project cover."
+    )
+    
+    threejs_script = models.TextField(
+        blank=True, 
+        null=True, 
+        help_text="JavaScript code to initialize the Three.js scene (using a container with ID 'threejs-container-{{project.id}}')."
+    )
+
+    threejs_file = models.FileField(
+        upload_to='projects/threejs/',
+        blank=True,
+        null=True,
+        help_text="Upload a .js file for the Three.js initialization script. Takes precedence over the text field."
+    )
+    
+    html_content = models.TextField(
+        blank=True, 
+        null=True, 
+        help_text="Custom HTML/CSS to be rendered as the cover."
+    )
+
+    html_file = models.FileField(
+        upload_to='projects/html/',
+        blank=True,
+        null=True,
+        help_text="Upload an .html file for the custom cover content. Takes precedence over the text field."
+    )
+
     def __str__(self):
         return self.title
+    
+    def get_threejs_script(self):
+        """Returns script content from file if exists, otherwise from text field."""
+        if self.threejs_file:
+            try:
+                with self.threejs_file.open('r') as f:
+                    return f.read()
+            except Exception as e:
+                return f"// Error reading Three.js file: {e}"
+        return self.threejs_script
+    
+    def get_html_content(self):
+        """Returns HTML content from file if exists, otherwise from text field."""
+        if self.html_file:
+            try:
+                with self.html_file.open('r') as f:
+                    return f.read()
+            except Exception as e:
+                return f"<!-- Error reading HTML file: {e} -->"
+        return self.html_content
     
 
 class Certificate(models.Model):

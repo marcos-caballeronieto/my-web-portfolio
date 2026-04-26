@@ -10,10 +10,23 @@ class ProjectAdmin(admin.ModelAdmin):
     - Uses horizontal filter widget for the 'categories' and 'related_projects' many-to-many fields.
     - Auto-generates slug from title.
     """
-    list_display = ('title', 'slug', 'is_featured')
+    list_display = ('title', 'slug', 'is_featured', 'cover_type')
     list_editable = ('is_featured',)
     filter_horizontal = ('categories', 'related_projects')
     prepopulated_fields = {'slug': ('title',)}
+    
+    fieldsets = (
+        ("Basic Info", {
+            "fields": ("title", "slug", "short_description", "description", "categories", "is_featured", "relevance")
+        }),
+        ("Dynamic Cover", {
+            "fields": ("cover_type", "image", "threejs_script", "threejs_file", "html_content", "html_file"),
+            "description": "Select the cover type and provide the corresponding content/script via text or file upload."
+        }),
+        ("URLs & Relations", {
+            "fields": ("url", "github_url", "related_projects")
+        }),
+    )
 
 # Register your models here.
 
