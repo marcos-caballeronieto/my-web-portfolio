@@ -31,11 +31,10 @@
 
         dna-border {
             position: absolute;
-            top: 50%;
+            top: 0;
             left: 0;
             width: 100%;
-            height: 40px; 
-            transform: translateY(-50%);
+            height: 100%; 
             display: block;
             pointer-events: none; 
             z-index: 0;
@@ -262,33 +261,46 @@
                 this.animationFrameId = null;
                 this.resize = this.resize.bind(this);
                 this.animate = this.animate.bind(this);
+                this.handleScroll = this.handleScroll.bind(this);
             }
             connectedCallback() {
                 window.addEventListener('resize', this.resize);
+                window.addEventListener('scroll', this.handleScroll);
                 setTimeout(() => {
                     this.resize();
                     this.animate();
+                    this.handleScroll(); // Initial check
                 }, 0);
             }
             disconnectedCallback() {
                 window.removeEventListener('resize', this.resize);
+                window.removeEventListener('scroll', this.handleScroll);
                 cancelAnimationFrame(this.animationFrameId);
             }
+            handleScroll() {
+                const scrollThreshold = 400;
+                const baseOpacity = 0.8;
+                const newOpacity = Math.max(0, baseOpacity - (window.scrollY / scrollThreshold) * baseOpacity);
+                this.style.opacity = newOpacity;
+            }
             resize() {
-                this.canvas.width = this.canvas.clientWidth;
-                this.canvas.height = this.canvas.clientHeight;
+                // Cap DPR at 1.5 for performance
+                const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+                this.canvas.width = this.canvas.clientWidth * dpr;
+                this.canvas.height = this.canvas.clientHeight * dpr;
+                this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
             }
             animate() {
                 const { ctx, canvas } = this;
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                const centerY = canvas.height / 2;
+                const centerY = canvas.clientHeight / 2;
                 const renderQueue = [];
                 const baseRadius = 12;
                 const spacing = 12;
                 const phaseOffset = 0.2;
                 const maxDotSize = 4;
                 const minDotSize = 2.5;
-                const numPairs = Math.ceil(canvas.width / spacing) + 2;
+                const numPairs = Math.ceil(canvas.clientWidth / spacing) + 2;
 
                 for (let i = -1; i < numPairs; i++) {
                     const x = i * spacing;
@@ -311,9 +323,11 @@
                             ctx.beginPath();
                             ctx.moveTo(x, currentCenterY + y1);
                             ctx.lineTo(x, currentCenterY + y2);
-                            ctx.strokeStyle = '#d4af37';
-                            ctx.globalAlpha = 0.1 + (midDepth * 0.6);
-                            ctx.lineWidth = 1.5;
+                            
+                            // Depth-based styling for rungs
+                            ctx.strokeStyle = `hsl(46, 65%, ${50 + midDepth * 25}%)`;
+                            ctx.globalAlpha = 0.1 + (midDepth * 0.4);
+                            ctx.lineWidth = 1;
                             ctx.stroke();
                         }
                     });
@@ -321,11 +335,23 @@
                     renderQueue.push({
                         z: z1,
                         draw: () => {
-                            ctx.beginPath();
                             const currentRadius = minDotSize + (depth1 * (maxDotSize - minDotSize));
+                            const brightness = 40 + (depth1 * 30);
+                            const color = `hsl(46, 65%, ${brightness}%)`;
+                            
+                            // CHEAP GLOW: Draw a larger faint circle instead of using shadowBlur
+                            if (depth1 > 0.7) {
+                                ctx.beginPath();
+                                ctx.arc(x, currentCenterY + y1, currentRadius * 2, 0, Math.PI * 2);
+                                ctx.fillStyle = color;
+                                ctx.globalAlpha = (depth1 - 0.7) * 0.2;
+                                ctx.fill();
+                            }
+
+                            ctx.beginPath();
                             ctx.arc(x, currentCenterY + y1, currentRadius, 0, Math.PI * 2);
-                            ctx.fillStyle = '#d4af37';
-                            ctx.globalAlpha = 0.15 + (depth1 * 0.85);
+                            ctx.fillStyle = color;
+                            ctx.globalAlpha = 0.2 + (depth1 * 0.8);
                             ctx.fill();
                         }
                     });
@@ -333,11 +359,23 @@
                     renderQueue.push({
                         z: z2,
                         draw: () => {
-                            ctx.beginPath();
                             const currentRadius = minDotSize + (depth2 * (maxDotSize - minDotSize));
+                            const brightness = 40 + (depth2 * 30);
+                            const color = `hsl(46, 65%, ${brightness}%)`;
+
+                            // CHEAP GLOW
+                            if (depth2 > 0.7) {
+                                ctx.beginPath();
+                                ctx.arc(x, currentCenterY + y2, currentRadius * 2, 0, Math.PI * 2);
+                                ctx.fillStyle = color;
+                                ctx.globalAlpha = (depth2 - 0.7) * 0.2;
+                                ctx.fill();
+                            }
+
+                            ctx.beginPath();
                             ctx.arc(x, currentCenterY + y2, currentRadius, 0, Math.PI * 2);
-                            ctx.fillStyle = '#d4af37';
-                            ctx.globalAlpha = 0.15 + (depth2 * 0.85);
+                            ctx.fillStyle = color;
+                            ctx.globalAlpha = 0.2 + (depth2 * 0.8);
                             ctx.fill();
                         }
                     });
