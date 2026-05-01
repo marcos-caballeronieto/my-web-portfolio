@@ -38,9 +38,40 @@
             display: block;
             pointer-events: none; 
             z-index: 0;
-            opacity: 0.8;
-            mask-image: linear-gradient(to right, transparent, white 15%, white 85%, transparent);
-            -webkit-mask-image: linear-gradient(to right, transparent, white 15%, white 85%, transparent);
+            opacity: 0.6;
+            mask-image: linear-gradient(to right, transparent, white 30%, white 70%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, white 30%, white 70%, transparent);
+        }
+
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 5px;
+            left: 50%;
+            background-color: #d4af37;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover::after {
+            width: 80%;
+        }
+
+        @keyframes logo-pulse {
+            0% { filter: drop-shadow(0 0 2px rgba(212, 175, 55, 0.2)); }
+            50% { filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.7)); }
+            100% { filter: drop-shadow(0 0 2px rgba(212, 175, 55, 0.2)); }
+        }
+
+        .navbar-brand svg {
+            animation: logo-pulse 4s infinite ease-in-out;
         }
     </style>
 
