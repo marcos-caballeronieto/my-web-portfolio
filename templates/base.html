@@ -28,6 +28,21 @@
             transform: translateY(-5px); 
             color: #0d6efd !important;   
         }
+
+        dna-border {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 40px; 
+            transform: translateY(-50%);
+            display: block;
+            pointer-events: none; 
+            z-index: 0;
+            opacity: 0.8;
+            mask-image: linear-gradient(to right, transparent, white 15%, white 85%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, white 15%, white 85%, transparent);
+        }
     </style>
 
 </head>
@@ -73,6 +88,7 @@
                 </ul>
             </div>
         </div>
+        <dna-border></dna-border>
     </nav>
 
     <div class="container mt-4 flex-grow-1">
@@ -232,6 +248,109 @@
         });
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.163.0/three.min.js"></script>
+
+    <script>
+        class DnaBorder extends HTMLElement {
+            constructor() {
+                super(); 
+                this.attachShadow({ mode: 'open' });
+                this.canvas = document.createElement('canvas');
+                this.canvas.style.cssText = 'display: block; width: 100%; height: 100%;';
+                this.shadowRoot.appendChild(this.canvas);
+                this.ctx = this.canvas.getContext('2d');
+                this.time = 0;
+                this.animationFrameId = null;
+                this.resize = this.resize.bind(this);
+                this.animate = this.animate.bind(this);
+            }
+            connectedCallback() {
+                window.addEventListener('resize', this.resize);
+                setTimeout(() => {
+                    this.resize();
+                    this.animate();
+                }, 0);
+            }
+            disconnectedCallback() {
+                window.removeEventListener('resize', this.resize);
+                cancelAnimationFrame(this.animationFrameId);
+            }
+            resize() {
+                this.canvas.width = this.canvas.clientWidth;
+                this.canvas.height = this.canvas.clientHeight;
+            }
+            animate() {
+                const { ctx, canvas } = this;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                const centerY = canvas.height / 2;
+                const renderQueue = [];
+                const baseRadius = 12;
+                const spacing = 12;
+                const phaseOffset = 0.2;
+                const maxDotSize = 4;
+                const minDotSize = 2.5;
+                const numPairs = Math.ceil(canvas.width / spacing) + 2;
+
+                for (let i = -1; i < numPairs; i++) {
+                    const x = i * spacing;
+                    const yOffset = Math.sin(x * 0.005) * 2;
+                    const currentCenterY = centerY + yOffset;
+                    const angle = this.time + (i * phaseOffset);
+                    
+                    const y1 = Math.sin(angle) * baseRadius;
+                    const z1 = Math.cos(angle) * baseRadius;
+                    const y2 = Math.sin(angle + Math.PI) * baseRadius;
+                    const z2 = Math.cos(angle + Math.PI) * baseRadius;
+
+                    const depth1 = (z1 + baseRadius) / (baseRadius * 2);
+                    const depth2 = (z2 + baseRadius) / (baseRadius * 2);
+                    const midDepth = ((z1 + z2) / 2 + baseRadius) / (baseRadius * 2);
+
+                    renderQueue.push({
+                        z: (z1 + z2) / 2,
+                        draw: () => {
+                            ctx.beginPath();
+                            ctx.moveTo(x, currentCenterY + y1);
+                            ctx.lineTo(x, currentCenterY + y2);
+                            ctx.strokeStyle = '#d4af37';
+                            ctx.globalAlpha = 0.1 + (midDepth * 0.6);
+                            ctx.lineWidth = 1.5;
+                            ctx.stroke();
+                        }
+                    });
+
+                    renderQueue.push({
+                        z: z1,
+                        draw: () => {
+                            ctx.beginPath();
+                            const currentRadius = minDotSize + (depth1 * (maxDotSize - minDotSize));
+                            ctx.arc(x, currentCenterY + y1, currentRadius, 0, Math.PI * 2);
+                            ctx.fillStyle = '#d4af37';
+                            ctx.globalAlpha = 0.15 + (depth1 * 0.85);
+                            ctx.fill();
+                        }
+                    });
+
+                    renderQueue.push({
+                        z: z2,
+                        draw: () => {
+                            ctx.beginPath();
+                            const currentRadius = minDotSize + (depth2 * (maxDotSize - minDotSize));
+                            ctx.arc(x, currentCenterY + y2, currentRadius, 0, Math.PI * 2);
+                            ctx.fillStyle = '#d4af37';
+                            ctx.globalAlpha = 0.15 + (depth2 * 0.85);
+                            ctx.fill();
+                        }
+                    });
+                }
+                renderQueue.sort((a, b) => a.z - b.z);
+                renderQueue.forEach(item => item.draw());
+                ctx.globalAlpha = 1.0;
+                this.time += 0.015;
+                this.animationFrameId = requestAnimationFrame(this.animate);
+            }
+        }
+        customElements.define('dna-border', DnaBorder);
+    </script>
 
     {% block extra_scripts %}
     {% endblock %}

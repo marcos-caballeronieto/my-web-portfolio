@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Component DNA Navbar</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #050505;
+            color: #ffffff;
+        }
+
+        .navbar {
+            position: relative; 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #0a0a0a;
+            padding: 0 40px;
+            padding-bottom: 50px; 
+            height: 120px;
+            border-bottom: 1px solid #222;
+        }
+
+        .brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-decoration: none;
+            color: #ffffff;
+            z-index: 10;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+            z-index: 10; 
+        }
+
+        .nav-links li a {
+            text-decoration: none;
+            color: #888888;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .nav-links li a:hover {
+            color: #ffffff;
+        }
+
+        /* 
+         * Notice how clean the CSS is now! 
+         * We just size the custom element like a normal div. 
+         */
+        dna-border {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 70px; 
+            display: block;
+            pointer-events: none; 
+        }
+
+        .content {
+            padding: 60px 40px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .content p { color: #a0a0a0; line-height: 1.6; margin-bottom: 20px;}
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="#" class="brand">BioGen</a>
+
+        <ul class="nav-links">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Research</a></li>
+            <li><a href="#">About Us</a></li>
+        </ul>
+
+        <!-- HERE IT IS: Our custom HTML tag! -->
+        <dna-border></dna-border>
+    </nav>
+
+    <div class="content">
+        <h1>Native Web Components</h1>
+        <p>Take a look at the HTML source code. The animation isn't floating loosely in a script tag; it is entirely encapsulated inside the custom <code>&lt;dna-border&gt;</code> element.</p>
+        <p>You can copy and paste that single tag anywhere on your website, as many times as you want, and it will just work.</p>
+    </div>
+
+<script>
+    /**
+     * Step 1: Define the Blueprint for your new HTML element
+     */
+    class DnaBorder extends HTMLElement {
+        constructor() {
+            super(); // Always call super() first in the constructor.
+            
+            // Step 2: Attach a Shadow DOM
+            this.attachShadow({ mode: 'open' });
+            
+            // Create the canvas and add it to the Shadow DOM
+            this.canvas = document.createElement('canvas');
+            this.canvas.style.cssText = 'display: block; width: 100%; height: 100%;';
+            this.shadowRoot.appendChild(this.canvas);
+            
+            this.ctx = this.canvas.getContext('2d');
+            this.time = 0;
+            this.animationFrameId = null;
+            
+            // Bind our methods so 'this' always refers to the element
+            this.resize = this.resize.bind(this);
+            this.animate = this.animate.bind(this);
+        }
+
+        /**
+         * Step 3: connectedCallback (Fires when the tag is added to the page)
+         */
+        connectedCallback() {
+            window.addEventListener('resize', this.resize);
+            
+            // A tiny delay ensures the browser has finished painting the element 
+            // so we can accurately measure its width and height before animating.
+            setTimeout(() => {
+                this.resize();
+                this.animate();
+            }, 0);
+        }
+
+        /**
+         * Step 4: disconnectedCallback (Fires if the tag is removed from the page)
+         */
+        disconnectedCallback() {
+            window.removeEventListener('resize', this.resize);
+            cancelAnimationFrame(this.animationFrameId);
+        }
+
+        resize() {
+            this.canvas.width = this.canvas.clientWidth;
+            this.canvas.height = this.canvas.clientHeight;
+        }
+
+        /**
+         * The exact same minimalist animation logic from before
+         */
+        animate() {
+            const { ctx, canvas } = this;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const centerY = canvas.height / 2;
+            const renderQueue = [];
+
+            const baseRadius = 20;
+            const spacing = 18;
+            const phaseOffset = 0.12;
+            const maxDotSize = 4.5;
+            const minDotSize = 1.5;
+
+            const numPairs = Math.ceil(canvas.width / spacing) + 2;
+
+            for (let i = -1; i < numPairs; i++) {
+                const x = i * spacing;
+                const yOffset = Math.sin(x * 0.005) * 4;
+                const currentCenterY = centerY + yOffset;
+                const angle = this.time + (i * phaseOffset);
+                
+                const y1 = Math.sin(angle) * baseRadius;
+                const z1 = Math.cos(angle) * baseRadius;
+                const y2 = Math.sin(angle + Math.PI) * baseRadius;
+                const z2 = Math.cos(angle + Math.PI) * baseRadius;
+
+                const depth1 = (z1 + baseRadius) / (baseRadius * 2);
+                const depth2 = (z2 + baseRadius) / (baseRadius * 2);
+                const midDepth = ((z1 + z2) / 2 + baseRadius) / (baseRadius * 2);
+
+                // Rungs
+                renderQueue.push({
+                    z: (z1 + z2) / 2,
+                    draw: () => {
+                        ctx.beginPath();
+                        ctx.moveTo(x, currentCenterY + y1);
+                        ctx.lineTo(x, currentCenterY + y2);
+                        ctx.strokeStyle = '#ffffff';
+                        ctx.globalAlpha = 0.05 + (midDepth * 0.4);
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                    }
+                });
+
+                // Point 1
+                renderQueue.push({
+                    z: z1,
+                    draw: () => {
+                        ctx.beginPath();
+                        const currentRadius = minDotSize + (depth1 * (maxDotSize - minDotSize));
+                        ctx.arc(x, currentCenterY + y1, currentRadius, 0, Math.PI * 2);
+                        ctx.fillStyle = '#ffffff';
+                        ctx.globalAlpha = 0.15 + (depth1 * 0.85);
+                        ctx.fill();
+                    }
+                });
+
+                // Point 2
+                renderQueue.push({
+                    z: z2,
+                    draw: () => {
+                        ctx.beginPath();
+                        const currentRadius = minDotSize + (depth2 * (maxDotSize - minDotSize));
+                        ctx.arc(x, currentCenterY + y2, currentRadius, 0, Math.PI * 2);
+                        ctx.fillStyle = '#ffffff';
+                        ctx.globalAlpha = 0.15 + (depth2 * 0.85);
+                        ctx.fill();
+                    }
+                });
+            }
+
+            renderQueue.sort((a, b) => a.z - b.z);
+            renderQueue.forEach(item => item.draw());
+            ctx.globalAlpha = 1.0;
+
+            this.time += 0.015;
+            this.animationFrameId = requestAnimationFrame(this.animate);
+        }
+    }
+
+    /**
+     * Step 5: Register the element with the browser!
+     */
+    customElements.define('dna-border', DnaBorder);
+</script>
+
+</body>
+</html>
