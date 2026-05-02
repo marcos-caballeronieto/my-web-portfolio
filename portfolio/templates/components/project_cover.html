@@ -1,40 +1,7 @@
-{% if project.cover_type == 'THREEJS' %}
-    <div id="threejs-container-{{ project.pk }}" class="project-cover-threejs" style="height: {{ height|default:'200px' }}; width: 100%; background: #000; position: relative; overflow: hidden;">
-        <div class="threejs-loader" style="position: absolute; top:50%; left:50%; transform:translate(-50%, -50%); color: #fff;">
-            <i class="fas fa-spinner fa-spin"></i>
-        </div>
-    </div>
-    {% with threejs_script=project.get_threejs_script %}
-    {% if threejs_script %}
-        <script>
-            (function() {
-                const container = document.getElementById('threejs-container-{{ project.pk }}');
-                const loader = container.querySelector('.threejs-loader');
-                
-                try {
-                    // Create a unique scope for this project's Three.js logic
-                    const initThreeJS = function(container) {
-                        {{ threejs_script|safe }}
-                    };
-                    
-                    // Delay execution slightly to ensure container is ready and not block UI
-                    setTimeout(() => {
-                        initThreeJS(container);
-                        if (loader) loader.style.display = 'none';
-                    }, 100);
-                } catch (e) {
-                    console.error("Three.js initialization failed for project {{ project.pk }}:", e);
-                    container.innerHTML = '<div style="color:red; padding:20px;">Animation Error</div>';
-                }
-            })();
-        </script>
-    {% endif %}
-    {% endwith %}
-
-{% elif project.cover_type == 'HTML' %}
+{% if is_list_view and project.list_cover_type == 'HTML' %}
     <div class="project-cover-html-wrapper" style="height: {{ height|default:'200px' }}; width: 100%; overflow: hidden; background: transparent;">
         <iframe 
-            srcdoc="<!DOCTYPE html><html><head><meta name='viewport' content='width=device-width, initial-scale=1.0'><style>body { margin: 0; padding: 0; overflow: hidden; background: transparent; }</style></head><body>{{ project.get_html_content }}</body></html>" 
+            srcdoc="<!DOCTYPE html><html><head><meta name='viewport' content='width=device-width, initial-scale=1.0'><style>body { margin: 0; padding: 0; overflow: hidden; background: transparent; }</style></head><body>{{ project.get_list_html_content }}</body></html>" 
             style="width: 100%; height: 100%; border: none; overflow: hidden; background: transparent;"
             sandbox="allow-scripts"
             scrolling="no"
@@ -42,8 +9,59 @@
         </iframe>
     </div>
 
-{% else %}
-    {% if project.image %}
+{% elif is_list_view and project.list_cover_type == 'IMAGE' %}
+    {% if project.list_image %}
+        <img src="{{ project.list_image.url }}" class="card-img-top" alt="{{ project.title }}" style="height: {{ height|default:'200px' }}; object-fit: cover;">
+    {% elif project.image %}
         <img src="{{ project.image.url }}" class="card-img-top" alt="{{ project.title }}" style="height: {{ height|default:'200px' }}; object-fit: cover;">
+    {% endif %}
+
+{% else %}
+    {% if project.cover_type == 'THREEJS' or is_list_view and project.list_cover_type == 'THREEJS' %}
+        <div id="threejs-container-{{ project.pk }}" class="project-cover-threejs" style="height: {{ height|default:'200px' }}; width: 100%; background: #000; position: relative; overflow: hidden;">
+            <div class="threejs-loader" style="position: absolute; top:50%; left:50%; transform:translate(-50%, -50%); color: #fff;">
+                <i class="fas fa-spinner fa-spin"></i>
+            </div>
+        </div>
+        {% with threejs_script=project.get_threejs_script %}
+        {% if threejs_script %}
+            <script>
+                (function() {
+                    const container = document.getElementById('threejs-container-{{ project.pk }}');
+                    const loader = container.querySelector('.threejs-loader');
+                    
+                    try {
+                        const initThreeJS = function(container) {
+                            {{ threejs_script|safe }}
+                        };
+                        
+                        setTimeout(() => {
+                            initThreeJS(container);
+                            if (loader) loader.style.display = 'none';
+                        }, 100);
+                    } catch (e) {
+                        console.error("Three.js initialization failed for project {{ project.pk }}:", e);
+                        container.innerHTML = '<div style="color:red; padding:20px;">Animation Error</div>';
+                    }
+                })();
+            </script>
+        {% endif %}
+        {% endwith %}
+
+    {% elif project.cover_type == 'HTML' %}
+        <div class="project-cover-html-wrapper" style="height: {{ height|default:'200px' }}; width: 100%; overflow: hidden; background: transparent;">
+            <iframe 
+                srcdoc="<!DOCTYPE html><html><head><meta name='viewport' content='width=device-width, initial-scale=1.0'><style>body { margin: 0; padding: 0; overflow: hidden; background: transparent; }</style></head><body>{{ project.get_html_content }}</body></html>" 
+                style="width: 100%; height: 100%; border: none; overflow: hidden; background: transparent;"
+                sandbox="allow-scripts"
+                scrolling="no"
+                loading="lazy">
+            </iframe>
+        </div>
+
+    {% else %}
+        {% if project.image %}
+            <img src="{{ project.image.url }}" class="card-img-top" alt="{{ project.title }}" style="height: {{ height|default:'200px' }}; object-fit: cover;">
+        {% endif %}
     {% endif %}
 {% endif %}

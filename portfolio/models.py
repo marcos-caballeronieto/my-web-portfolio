@@ -48,7 +48,22 @@ class Project(models.Model):
         max_length=10, 
         choices=CoverType.choices, 
         default=CoverType.IMAGE,
-        help_text="Select what type of content to display as the project cover."
+        help_text="Select what type of content to display as the project cover in the detail view."
+    )
+    
+    list_cover_type = models.CharField(
+        max_length=10, 
+        choices=CoverType.choices, 
+        default=CoverType.IMAGE,
+        verbose_name="List View Cover Type",
+        help_text="Select what type of content to display in the project list (outside view)."
+    )
+
+    list_image = models.ImageField(
+        upload_to='projects/list_covers/', 
+        blank=True, 
+        null=True,
+        help_text="Optional: Different image for the list view. If empty, the main image is used."
     )
     
     threejs_script = models.TextField(
@@ -77,6 +92,19 @@ class Project(models.Model):
         help_text="Upload an .html file for the custom cover content. Takes precedence over the text field."
     )
 
+    list_html_content = models.TextField(
+        blank=True, 
+        null=True, 
+        help_text="Custom HTML/CSS for the list view cover."
+    )
+
+    list_html_file = models.FileField(
+        upload_to='projects/html/',
+        blank=True,
+        null=True,
+        help_text="Upload an .html file for the list view cover. Takes precedence over the text field."
+    )
+
     def __str__(self):
         return self.title
     
@@ -99,6 +127,16 @@ class Project(models.Model):
             except Exception as e:
                 return f"<!-- Error reading HTML file: {e} -->"
         return self.html_content
+        
+    def get_list_html_content(self):
+        """Returns List View HTML content from file if exists, otherwise from text field."""
+        if self.list_html_file:
+            try:
+                with self.list_html_file.open('r') as f:
+                    return f.read()
+            except Exception as e:
+                return f"<!-- Error reading List HTML file: {e} -->"
+        return self.list_html_content
     
 
 class Certificate(models.Model):

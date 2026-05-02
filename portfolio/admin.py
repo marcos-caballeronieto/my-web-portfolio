@@ -19,9 +19,13 @@ class ProjectAdmin(admin.ModelAdmin):
         ("Basic Info", {
             "fields": ("title", "slug", "short_description", "description", "categories", "is_featured", "relevance")
         }),
-        ("Dynamic Cover", {
+        ("Detail View Cover", {
             "fields": ("cover_type", "image", "threejs_script", "threejs_file", "html_content", "html_file"),
-            "description": "Select the cover type and provide the corresponding content/script via text or file upload."
+            "description": "Select the cover type and provide the corresponding content/script via text or file upload for the detail view."
+        }),
+        ("List View Cover (Outside)", {
+            "fields": ("list_cover_type", "list_image", "list_html_content", "list_html_file"),
+            "description": "Select the cover type and content to display in the project list or home page."
         }),
         ("URLs & Relations", {
             "fields": ("url", "github_url", "related_projects")
