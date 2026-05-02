@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flat Gold & Charcoal Rack & Pinion</title>
+    <style>
+        body {
+            height: 400vh;
+            margin: 0;
+            background-color: #3d2f36; 
+            color: #f0f0f0;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-size: 16px;
+            
+            /* Hide default browser scrollbar */
+            scrollbar-width: none; 
+            -ms-overflow-style: none;  
+        }
+        
+        body::-webkit-scrollbar {
+            display: none; 
+        }
+
+        .content {
+            padding: 10vmin;
+            max-width: 700px;
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        h1 {
+            font-weight: 500;
+            letter-spacing: -0.03em;
+            margin-bottom: 2rem;
+            color: #ffffff; 
+        }
+        
+        .gold-accent {
+            color: #d0a640;
+        }
+
+        p {
+            margin-bottom: 2rem;
+            color: #cccccc;
+        }
+
+        #scrollbarContainer {
+            position: fixed;
+            top: 0;
+            right: 0;
+            z-index: 9999;
+            cursor: grab;
+            height: 100vh;
+            width: 80px; 
+            /* All CSS drop-shadows removed */
+        }
+
+        #scrollbarCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: transparent; 
+        }
+
+        #scrollbarContainer:active {
+            cursor: grabbing;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="content">
+        <h1>Clean <span class="gold-accent">Flat Design</span></h1>
+        <p>The interface has been stripped of all shadows for a crisp, distraction-free aesthetic.</p>
+        <p style="margin-top: 100vh;">The flat colors ensure maximum contrast and readability.</p>
+        <p style="margin-top: 100vh;">Sometimes simpler is better, especially for functional UI elements.</p>
+        <p style="margin-top: 100vh;">The perfect kinematic mesh remains intact.</p>
+        <p style="margin-top: 50vh;">Complete.</p>
+    </div>
+
+    <div id="scrollbarContainer">
+        <canvas id="scrollbarCanvas"></canvas>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('scrollbarCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // --- Kinematic Configuration ---
+        const scrollbarWidth = 80;
+        const numTeeth = 16; 
+        const pitchRadius = 30; 
+        const toothPitch = (Math.PI * 2 * pitchRadius) / numTeeth; 
+        const toothAngle = (Math.PI * 2) / numTeeth;
+        const toothHeight = 8;
+        
+        // Pinion Radii
+        const pinionOuterRadius = pitchRadius + (toothHeight / 2);
+        const pinionBaseRadius = pitchRadius - (toothHeight / 2);
+        const centralHoleRadius = 15; 
+        
+        // Rack X-Coordinates
+        const rackBaseX = scrollbarWidth - 10;
+        const rackFaceX = rackBaseX - toothHeight;
+        const rackPitchX = rackBaseX - (toothHeight / 2);
+        
+        // Pinion X-Coordinate
+        const pinionX = rackPitchX - pitchRadius; 
+
+        let currentPinionY = 0;
+        let isDragging = false;
+
+        function resizeCanvas() {
+            canvas.width = scrollbarWidth;
+            canvas.height = window.innerHeight;
+            updateAnimation();
+        }
+
+        function drawSVGStyleRack(trackStart) {
+            ctx.save();
+            ctx.fillStyle = '#1a1a1a'; 
+            
+            ctx.beginPath();
+            ctx.moveTo(scrollbarWidth, 0); 
+            ctx.lineTo(rackBaseX, 0);
+
+            let startK = Math.floor((0 - trackStart) / toothPitch) - 1;
+            let startY = trackStart + startK * toothPitch;
+
+            for (let y = startY; y < canvas.height + toothPitch; y += toothPitch) {
+                const y_tooth = y + 0.5 * toothPitch; 
+                
+                const toothTopBase = y_tooth - 0.28 * toothPitch;
+                const toothTopTip = y_tooth - 0.18 * toothPitch;
+                const toothBottomTip = y_tooth + 0.18 * toothPitch;
+                const toothBottomBase = y_tooth + 0.28 * toothPitch;
+
+                ctx.lineTo(rackBaseX, toothTopBase);
+                ctx.lineTo(rackFaceX, toothTopTip);
+                ctx.lineTo(rackFaceX, toothBottomTip);
+                ctx.lineTo(rackBaseX, toothBottomBase);
+            }
+            
+            ctx.lineTo(rackBaseX, canvas.height);
+            ctx.lineTo(scrollbarWidth, canvas.height);
+            ctx.closePath();
+            
+            ctx.fill();
+            ctx.restore();
+        }
+
+        function drawPinion(y, rotation) {
+            ctx.save();
+            ctx.translate(pinionX, y);
+            ctx.rotate(rotation);
+            
+            ctx.fillStyle = '#d0a640'; 
+            
+            // 1. Draw solid outer gear profile (No canvas shadows)
+            ctx.beginPath();
+            for (let i = 0; i < numTeeth; i++) {
+                const a = i * toothAngle;
+                
+                const baseTop = a - 0.28 * toothAngle;
+                const tipTop = a - 0.18 * toothAngle;
+                const tipBottom = a + 0.18 * toothAngle;
+                const baseBottom = a + 0.28 * toothAngle;
+                
+                if (i === 0) {
+                    ctx.moveTo(Math.cos(baseTop) * pinionBaseRadius, Math.sin(baseTop) * pinionBaseRadius);
+                } else {
+                    ctx.lineTo(Math.cos(baseTop) * pinionBaseRadius, Math.sin(baseTop) * pinionBaseRadius);
+                }
+                
+                ctx.lineTo(Math.cos(tipTop) * pinionOuterRadius, Math.sin(tipTop) * pinionOuterRadius);
+                ctx.lineTo(Math.cos(tipBottom) * pinionOuterRadius, Math.sin(tipBottom) * pinionOuterRadius);
+                ctx.lineTo(Math.cos(baseBottom) * pinionBaseRadius, Math.sin(baseBottom) * pinionBaseRadius);
+            }
+            ctx.closePath();
+            ctx.fill();
+
+            // 2. Punch the central hole (flat, matching background color)
+            ctx.beginPath();
+            ctx.arc(0, 0, centralHoleRadius, 0, Math.PI * 2); 
+            ctx.fillStyle = '#3d2f36'; 
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        function updateAnimation() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const padding = 30; 
+            const trackStart = pinionOuterRadius + padding;
+            const trackEnd = canvas.height - pinionOuterRadius - padding;
+            const trackLength = trackEnd - trackStart;
+
+            const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = scrollableHeight > 0 ? (window.scrollY / scrollableHeight) : 0; 
+            
+            currentPinionY = trackStart + (scrollPercent * trackLength);
+            const distance = currentPinionY - trackStart;
+            const angle = -(distance / pitchRadius);
+            
+            drawSVGStyleRack(trackStart);
+            drawPinion(currentPinionY, angle);
+        }
+
+        // --- Drag and Drop Logic ---
+        function mapMouseToScroll(mouseY) {
+            const padding = 30;
+            const trackStart = pinionOuterRadius + padding;
+            const trackEnd = canvas.height - pinionOuterRadius - padding;
+            const trackLength = trackEnd - trackStart;
+            
+            let constrainedY = Math.max(trackStart, Math.min(mouseY, trackEnd));
+            const scrollPercent = (constrainedY - trackStart) / trackLength;
+            const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
+            
+            window.scrollTo(0, scrollPercent * scrollableHeight);
+        }
+
+        const container = document.getElementById('scrollbarContainer');
+
+        container.addEventListener('mousedown', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const mouseY = e.clientY - rect.top;
+            
+            if (Math.abs(mouseY - currentPinionY) < pinionOuterRadius * 1.5) {
+                isDragging = true;
+                e.preventDefault(); 
+            }
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                mapMouseToScroll(e.clientY);
+            }
+        });
+
+        window.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        window.addEventListener('scroll', updateAnimation);
+        window.addEventListener('resize', resizeCanvas);
+
+        resizeCanvas();
+    </script>
+</body>
+</html>

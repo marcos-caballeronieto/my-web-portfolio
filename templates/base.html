@@ -73,11 +73,45 @@
         .navbar-brand svg {
             animation: logo-pulse 4s infinite ease-in-out;
         }
+
+        /* Custom Scrollbar Styles */
+        body {
+            scrollbar-width: none; 
+            -ms-overflow-style: none;  
+        }
+        body::-webkit-scrollbar {
+            display: none; 
+        }
+
+        #scrollbarContainer {
+            position: fixed;
+            top: 0;
+            right: 0;
+            z-index: 1000;
+            cursor: grab;
+            height: 100vh;
+            width: 80px; 
+        }
+
+        #scrollbarCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: transparent; 
+        }
+
+        #scrollbarContainer:active {
+            cursor: grabbing;
+        }
     </style>
 
 </head>
 
 <body class="d-flex flex-column min-vh-100">
+
+    <div id="scrollbarContainer">
+        <canvas id="scrollbarCanvas"></canvas>
+    </div>
 
     <div id="particles-js" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background-color: #f8f9fa;"></div>
 
@@ -126,7 +160,7 @@
         {% endblock %}
     </div>
 
-    <footer class="bg-dark text-white py-3 mt-5 border-top border-secondary">
+    <footer class="bg-dark text-white py-3 mt-5 border-top border-secondary" style="position: relative; z-index: 1010;">
         <div class="container text-center">
             
             <div class="row justify-content-center">
@@ -278,6 +312,219 @@
         });
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.163.0/three.min.js"></script>
+
+    <script>
+        // Custom Scrollbar Gear Component
+        const sbCanvas = document.getElementById('scrollbarCanvas');
+        const sbCtx = sbCanvas.getContext('2d');
+
+        // --- Kinematic Configuration ---
+        const scrollbarWidth = 80;
+        const numTeeth = 16; 
+        const pitchRadius = 30; 
+        const toothPitch = (Math.PI * 2 * pitchRadius) / numTeeth; 
+        const toothAngle = (Math.PI * 2) / numTeeth;
+        const toothHeight = 8;
+        
+        // Pinion Radii
+        const pinionOuterRadius = pitchRadius + (toothHeight / 2);
+        const pinionBaseRadius = pitchRadius - (toothHeight / 2);
+        const centralHoleRadius = 15; 
+        
+        // Rack X-Coordinates
+        const rackBaseX = scrollbarWidth - 10;
+        const rackFaceX = rackBaseX - toothHeight;
+        const rackPitchX = rackBaseX - (toothHeight / 2);
+        
+        // Pinion X-Coordinate
+        const pinionX = rackPitchX - pitchRadius; 
+
+        let currentPinionY = 0;
+        let isDraggingPinion = false;
+        
+        // Dynamic transparency state
+        let currentSbOpacity = 0.0;
+        let isSbScrolling = false;
+        let sbScrollTimeout;
+
+        function resizeSbCanvas() {
+            const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+            sbCanvas.style.width = scrollbarWidth + 'px';
+            sbCanvas.style.height = window.innerHeight + 'px';
+            sbCanvas.width = scrollbarWidth * dpr;
+            sbCanvas.height = window.innerHeight * dpr;
+            sbCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            updateSbAnimation();
+        }
+
+        function drawSVGStyleRack(trackStart) {
+            sbCtx.save();
+            
+            // Sleek, modern fade for the rack
+            const rackGrad = sbCtx.createLinearGradient(rackFaceX, 0, scrollbarWidth, 0);
+            rackGrad.addColorStop(0, 'rgba(127, 140, 141, 0.35)'); // Slightly more visible at the teeth
+            rackGrad.addColorStop(1, 'rgba(127, 140, 141, 0.05)'); // Fades almost completely out at the screen edge
+            sbCtx.fillStyle = rackGrad;
+
+            sbCtx.beginPath();
+            sbCtx.moveTo(scrollbarWidth, 0); 
+            sbCtx.lineTo(rackBaseX, 0);
+
+            let startK = Math.floor((0 - trackStart) / toothPitch) - 1;
+            let startY = trackStart + startK * toothPitch;
+
+            for (let y = startY; y < window.innerHeight + toothPitch; y += toothPitch) {
+                const y_tooth = y + 0.5 * toothPitch; 
+                
+                const toothTopBase = y_tooth - 0.28 * toothPitch;
+                const toothTopTip = y_tooth - 0.18 * toothPitch;
+                const toothBottomTip = y_tooth + 0.18 * toothPitch;
+                const toothBottomBase = y_tooth + 0.28 * toothPitch;
+
+                sbCtx.lineTo(rackBaseX, toothTopBase);
+                sbCtx.lineTo(rackFaceX, toothTopTip);
+                sbCtx.lineTo(rackFaceX, toothBottomTip);
+                sbCtx.lineTo(rackBaseX, toothBottomBase);
+            }
+            
+            sbCtx.lineTo(rackBaseX, window.innerHeight);
+            sbCtx.lineTo(scrollbarWidth, window.innerHeight);
+            sbCtx.closePath();
+            
+            sbCtx.fill();
+            sbCtx.restore();
+        }
+
+        function drawPinion(y, rotation) {
+            sbCtx.save();
+            sbCtx.translate(pinionX, y);
+            sbCtx.rotate(rotation);
+            
+            // Modern Glowing UI effect - Subtle
+            sbCtx.shadowColor = 'rgba(212, 175, 55, 0.4)'; // Subtler gold glow
+            sbCtx.shadowBlur = 6; // Decreased bloom
+            sbCtx.fillStyle = '#d4af37';
+            
+            // 1. Draw solid outer gear profile
+            sbCtx.beginPath();
+            for (let i = 0; i < numTeeth; i++) {
+                const a = i * toothAngle;
+                
+                const baseTop = a - 0.28 * toothAngle;
+                const tipTop = a - 0.18 * toothAngle;
+                const tipBottom = a + 0.18 * toothAngle;
+                const baseBottom = a + 0.28 * toothAngle;
+                
+                if (i === 0) {
+                    sbCtx.moveTo(Math.cos(baseTop) * pinionBaseRadius, Math.sin(baseTop) * pinionBaseRadius);
+                } else {
+                    sbCtx.lineTo(Math.cos(baseTop) * pinionBaseRadius, Math.sin(baseTop) * pinionBaseRadius);
+                }
+                
+                sbCtx.lineTo(Math.cos(tipTop) * pinionOuterRadius, Math.sin(tipTop) * pinionOuterRadius);
+                sbCtx.lineTo(Math.cos(tipBottom) * pinionOuterRadius, Math.sin(tipBottom) * pinionOuterRadius);
+                sbCtx.lineTo(Math.cos(baseBottom) * pinionBaseRadius, Math.sin(baseBottom) * pinionBaseRadius);
+            }
+            sbCtx.closePath();
+            sbCtx.fill();
+            
+            // Turn off shadow before punching the hole to keep edges sharp
+            sbCtx.shadowBlur = 0;
+
+            // 2. Punch the central hole
+            sbCtx.globalCompositeOperation = 'destination-out';
+            sbCtx.beginPath();
+            sbCtx.arc(0, 0, centralHoleRadius, 0, Math.PI * 2); 
+            sbCtx.fill();
+            sbCtx.globalCompositeOperation = 'source-over';
+
+            sbCtx.restore();
+        }
+
+        function updateSbAnimation() {
+            sbCtx.clearRect(0, 0, sbCanvas.width, sbCanvas.height);
+            
+            // Apply dynamic transparency
+            sbCtx.globalAlpha = currentSbOpacity;
+            
+            const padding = 30; 
+            const trackStart = pinionOuterRadius + padding;
+            const trackEnd = window.innerHeight - pinionOuterRadius - padding;
+            const trackLength = trackEnd - trackStart;
+
+            const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = scrollableHeight > 0 ? (window.scrollY / scrollableHeight) : 0; 
+            
+            currentPinionY = trackStart + (scrollPercent * trackLength);
+            const distance = currentPinionY - trackStart;
+            const angle = -(distance / pitchRadius);
+            
+            drawSVGStyleRack(trackStart);
+            drawPinion(currentPinionY, angle);
+        }
+
+        // --- Drag and Drop Logic ---
+        function mapMouseToScroll(mouseY) {
+            const padding = 30;
+            const trackStart = pinionOuterRadius + padding;
+            const trackEnd = window.innerHeight - pinionOuterRadius - padding;
+            const trackLength = trackEnd - trackStart;
+            
+            let constrainedY = Math.max(trackStart, Math.min(mouseY, trackEnd));
+            const scrollPercent = (constrainedY - trackStart) / trackLength;
+            const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
+            
+            window.scrollTo(0, scrollPercent * scrollableHeight);
+        }
+
+        const sbContainer = document.getElementById('scrollbarContainer');
+
+        sbContainer.addEventListener('mousedown', (e) => {
+            const rect = sbCanvas.getBoundingClientRect();
+            const mouseY = e.clientY - rect.top;
+            
+            if (Math.abs(mouseY - currentPinionY) < pinionOuterRadius * 1.5) {
+                isDraggingPinion = true;
+                e.preventDefault(); 
+            }
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (isDraggingPinion) {
+                mapMouseToScroll(e.clientY);
+            }
+        });
+
+        window.addEventListener('mouseup', () => {
+            isDraggingPinion = false;
+        });
+
+        window.addEventListener('scroll', () => {
+            isSbScrolling = true;
+            clearTimeout(sbScrollTimeout);
+            sbScrollTimeout = setTimeout(() => {
+                isSbScrolling = false;
+            }, 600); // Fade out after 600ms of no scrolling
+        });
+        
+        window.addEventListener('resize', resizeSbCanvas);
+
+        function sbRenderLoop() {
+            // Target 1.0 when active, 0.15 when idle
+            const targetOpacity = (isDraggingPinion || isSbScrolling) ? 1.0 : 0.15;
+            
+            // Ease opacity
+            currentSbOpacity += (targetOpacity - currentSbOpacity) * 0.1;
+            
+            updateSbAnimation();
+            requestAnimationFrame(sbRenderLoop);
+        }
+
+        setTimeout(() => {
+            resizeSbCanvas();
+            sbRenderLoop();
+        }, 100);
+    </script>
 
     <script>
         class DnaBorder extends HTMLElement {
