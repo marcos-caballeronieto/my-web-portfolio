@@ -27,6 +27,7 @@ urlpatterns = [
     path('about/', views.about, name='about'),  
     path('project/<slug:slug>/', views.project_detail, name='project_detail'),
     path('projects/', views.project_list, name='project_list'),
+    path('miniprojects/', views.mini_projects_list, name='mini_projects_list'),
 ]
 
 # This tells Django to serve media files during development

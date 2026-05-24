@@ -84,15 +84,43 @@ def project_list(request):
         HttpResponse: Rendered project_list.html template with projects and categories.
     """
     category_name = request.GET.get('category')
-    if category_name:
-        projects = Project.objects.filter(categories__name=category_name).order_by('-relevance')
-    else:
-        projects = Project.objects.all().order_by('-relevance')
+    base_query = Project.objects.filter(is_miniproject=False)
     
-    categories = Category.objects.all()
+    if category_name:
+        projects = base_query.filter(categories__name=category_name).order_by('-relevance')
+    else:
+        projects = base_query.order_by('-relevance')
+    
+    main_categories = Category.objects.filter(is_main=True)
+    other_categories = Category.objects.filter(is_main=False)
+    
     context = {
         'projects': projects,
-        'categories': categories,
+        'main_categories': main_categories,
+        'other_categories': other_categories,
         'active_category': category_name,
     }
     return render(request, './project_list.html', context)
+
+def mini_projects_list(request):
+    """
+    Renders the miniprojects list page, optionally filtered by category.
+    """
+    category_name = request.GET.get('category')
+    base_query = Project.objects.filter(is_miniproject=True)
+    
+    if category_name:
+        projects = base_query.filter(categories__name=category_name).order_by('-relevance')
+    else:
+        projects = base_query.order_by('-relevance')
+    
+    main_categories = Category.objects.filter(projects__is_miniproject=True, is_main=True).distinct()
+    other_categories = Category.objects.filter(projects__is_miniproject=True, is_main=False).distinct()
+    
+    context = {
+        'projects': projects,
+        'main_categories': main_categories,
+        'other_categories': other_categories,
+        'active_category': category_name,
+    }
+    return render(request, './mini_projects_list.html', context)

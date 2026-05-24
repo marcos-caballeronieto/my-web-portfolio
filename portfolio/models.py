@@ -9,6 +9,7 @@ class Category(models.Model):
     Each category has a unique name.
     """
     name = models.CharField(max_length=100, unique=True)
+    is_main = models.BooleanField(default=False, help_text="Show as a prominent button instead of in the dropdown")
     
     class Meta:
         verbose_name_plural = "Categories"
@@ -25,12 +26,14 @@ class Project(models.Model):
     slug = models.SlugField(max_length=200, unique=True, null=True, blank=True)
     short_description = models.TextField(default='No description', blank=True)
     description = CKEditor5Field('Description', config_name='default')
-    image = models.ImageField(upload_to='projects/')
+    image = models.ImageField(upload_to='projects/', blank=True, null=True)
     url = models.URLField(blank=True)
     github_url = models.URLField(blank=True)
     is_featured = models.BooleanField(default=False)
     categories = models.ManyToManyField(Category, related_name='projects')
     related_projects = models.ManyToManyField('self', blank=True, symmetrical=True)
+    is_miniproject = models.BooleanField(default=False, help_text="Mark this as a miniproject.")
+    parent_project = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='miniprojects', help_text="If this is a miniproject, select its main parent project.")
     class Relevance(models.IntegerChoices):
         VERY_LOW = 1, 'Very Low'
         LOW = 2, 'Low'
@@ -104,6 +107,22 @@ class Project(models.Model):
         null=True,
         help_text="Upload an .html file for the list view cover. Takes precedence over the text field."
     )
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        super().clean()
+        
+        # If detail cover_type is IMAGE, we must have image.
+        if self.cover_type == self.CoverType.IMAGE and not self.image:
+            raise ValidationError({
+                'image': 'Image is required when Detail View Cover Type is Static Image.'
+            })
+            
+        # If list_cover_type is IMAGE, we must have either list_image or image.
+        if self.list_cover_type == self.CoverType.IMAGE and not self.list_image and not self.image:
+            raise ValidationError({
+                'image': 'Image (or List View Cover Image) is required when List View Cover Type is Static Image.'
+            })
 
     def __str__(self):
         return self.title

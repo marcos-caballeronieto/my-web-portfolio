@@ -56,6 +56,32 @@ class ProjectModelTest(TestCase):
         )
         self.assertEqual(project.relevance, 4)
 
+    def test_project_validation_image_required(self):
+        """
+        Test that ValidationError is raised if cover_type is IMAGE and no image is provided.
+        """
+        from django.core.exceptions import ValidationError
+        project = Project(
+            title="Test Project No Image",
+            description="Test description",
+            cover_type=Project.CoverType.IMAGE
+        )
+        with self.assertRaises(ValidationError):
+            project.full_clean()
+
+    def test_project_validation_image_optional_for_threejs(self):
+        """
+        Test that validation passes without an image if cover_type is THREEJS.
+        """
+        project = Project(
+            title="Test Project ThreeJS",
+            description="Test description",
+            cover_type=Project.CoverType.THREEJS,
+            list_cover_type=Project.CoverType.THREEJS
+        )
+        # Should not raise validation error
+        project.full_clean()
+
 class CertificateModelTest(TestCase):
     """
     Test cases for the Certificate model.
@@ -83,6 +109,7 @@ class ViewTests(TestCase):
         self.category = Category.objects.create(name="Test Category")
         self.project = Project.objects.create(
             title="Test Project",
+            slug="test-project",
             description="Test description",
             relevance=3
         )
@@ -108,7 +135,7 @@ class ViewTests(TestCase):
         """
         Test that the project detail view returns a 200 status for existing project.
         """
-        response = self.client.get(reverse('project_detail', args=[self.project.pk]))
+        response = self.client.get(reverse('project_detail', args=[self.project.slug]))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['project'], self.project)
 
@@ -119,7 +146,8 @@ class ViewTests(TestCase):
         response = self.client.get(reverse('project_list'))
         self.assertEqual(response.status_code, 200)
         self.assertIn('projects', response.context)
-        self.assertIn('categories', response.context)
+        self.assertIn('main_categories', response.context)
+        self.assertIn('other_categories', response.context)
 
     def test_about_view(self):
         """

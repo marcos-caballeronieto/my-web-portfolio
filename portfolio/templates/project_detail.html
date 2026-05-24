@@ -48,6 +48,30 @@
         </div>
     </div>
 
+    {% if project.miniprojects.all %}
+        <div class="row justify-content-center mt-5">
+            <div class="col-lg-8">
+                <h3 class="fw-bold mb-4">Associated Miniprojects</h3>
+                <div class="row row-cols-2 row-cols-md-3 g-3">
+                    {% for mini in project.miniprojects.all %}
+                        <div class="col">
+                            <div class="card h-100 shadow-sm border project-card">
+                                {% include 'components/project_cover.html' with project=mini height='120px' is_list_view=True %}
+                                <div class="card-body p-2 text-center">
+                                    <h6 class="card-title m-0 fw-bold">
+                                        <a href="{% url 'project_detail' mini.slug %}" class="text-decoration-none text-dark stretched-link">
+                                            {{ mini.title }}
+                                        </a>
+                                    </h6>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
     {% if related_projects %}
         <div class="row justify-content-center mt-5">
             <div class="col-lg-8">

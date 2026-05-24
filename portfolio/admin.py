@@ -10,14 +10,18 @@ class ProjectAdmin(admin.ModelAdmin):
     - Uses horizontal filter widget for the 'categories' and 'related_projects' many-to-many fields.
     - Auto-generates slug from title.
     """
-    list_display = ('title', 'slug', 'is_featured', 'cover_type')
-    list_editable = ('is_featured',)
+    list_display = ('title', 'slug', 'is_featured', 'cover_type', 'is_miniproject')
+    list_editable = ('is_featured', 'is_miniproject')
     filter_horizontal = ('categories', 'related_projects')
     prepopulated_fields = {'slug': ('title',)}
     
     fieldsets = (
         ("Basic Info", {
             "fields": ("title", "slug", "short_description", "description", "categories", "is_featured", "relevance")
+        }),
+        ("Miniproject Settings", {
+            "fields": ("is_miniproject", "parent_project"),
+            "description": "Specify if this project is a miniproject and link it to its parent project."
         }),
         ("Detail View Cover", {
             "fields": ("cover_type", "image", "threejs_script", "threejs_file", "html_content", "html_file"),
