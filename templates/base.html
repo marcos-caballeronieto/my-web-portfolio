@@ -75,22 +75,38 @@
         }
 
         /* Custom Scrollbar Styles */
-        body {
-            scrollbar-width: none; 
-            -ms-overflow-style: none;  
-        }
-        body::-webkit-scrollbar {
-            display: none; 
+        @media (min-width: 992px) {
+            body {
+                scrollbar-width: none; 
+                -ms-overflow-style: none;  
+            }
+            body::-webkit-scrollbar {
+                display: none; 
+            }
+            #scrollbarContainer {
+                position: fixed;
+                top: 0;
+                right: 0;
+                z-index: 1000;
+                cursor: grab;
+                height: 100vh;
+                width: 80px; 
+                display: block;
+            }
         }
 
-        #scrollbarContainer {
-            position: fixed;
-            top: 0;
-            right: 0;
-            z-index: 1000;
-            cursor: grab;
-            height: 100vh;
-            width: 80px; 
+        @media (max-width: 991.98px) {
+            body {
+                scrollbar-width: auto; 
+                -ms-overflow-style: auto;  
+            }
+            body::-webkit-scrollbar {
+                display: block; 
+            }
+            #scrollbarContainer {
+                display: none !important;
+                pointer-events: none;
+            }
         }
 
         #scrollbarCanvas {
@@ -129,7 +145,7 @@
                     <line x1="50" y1="85" x2="50" y2="105" stroke="#d4af37" stroke-width="2"/>
                 </svg>
 
-                <span style="font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.5rem; letter-spacing: -0.5px; color: #fff; line-height: 1;">
+                <span style="font-family: 'Archivo', sans-serif; font-weight: 800; font-size: 1.5rem; letter-spacing: -0.5px; color: #fff; line-height: 1;">
                     MC
                 </span>
             </a>
@@ -318,6 +334,9 @@
         const sbCanvas = document.getElementById('scrollbarCanvas');
         const sbCtx = sbCanvas.getContext('2d');
 
+        // Helper to check if we are on desktop
+        const isDesktop = () => window.innerWidth >= 992;
+
         // --- Kinematic Configuration ---
         const scrollbarWidth = 80;
         const numTeeth = 16; 
@@ -348,6 +367,7 @@
         let sbScrollTimeout;
 
         function resizeSbCanvas() {
+            if (!isDesktop()) return;
             const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
             sbCanvas.style.width = scrollbarWidth + 'px';
             sbCanvas.style.height = window.innerHeight + 'px';
@@ -480,6 +500,7 @@
         const sbContainer = document.getElementById('scrollbarContainer');
 
         sbContainer.addEventListener('mousedown', (e) => {
+            if (!isDesktop()) return;
             const rect = sbCanvas.getBoundingClientRect();
             const mouseY = e.clientY - rect.top;
             
@@ -490,16 +511,19 @@
         });
 
         window.addEventListener('mousemove', (e) => {
+            if (!isDesktop()) return;
             if (isDraggingPinion) {
                 mapMouseToScroll(e.clientY);
             }
         });
 
         window.addEventListener('mouseup', () => {
+            if (!isDesktop()) return;
             isDraggingPinion = false;
         });
 
         window.addEventListener('scroll', () => {
+            if (!isDesktop()) return;
             isSbScrolling = true;
             clearTimeout(sbScrollTimeout);
             sbScrollTimeout = setTimeout(() => {
@@ -507,9 +531,20 @@
             }, 600); // Fade out after 600ms of no scrolling
         });
         
-        window.addEventListener('resize', resizeSbCanvas);
+        window.addEventListener('resize', () => {
+            if (isDesktop()) {
+                resizeSbCanvas();
+            } else {
+                sbCtx.clearRect(0, 0, sbCanvas.width, sbCanvas.height);
+            }
+        });
 
         function sbRenderLoop() {
+            if (!isDesktop()) {
+                sbCtx.clearRect(0, 0, sbCanvas.width, sbCanvas.height);
+                requestAnimationFrame(sbRenderLoop);
+                return;
+            }
             // Target 1.0 when active, 0.15 when idle
             const targetOpacity = (isDraggingPinion || isSbScrolling) ? 1.0 : 0.15;
             
@@ -521,7 +556,9 @@
         }
 
         setTimeout(() => {
-            resizeSbCanvas();
+            if (isDesktop()) {
+                resizeSbCanvas();
+            }
             sbRenderLoop();
         }, 100);
     </script>

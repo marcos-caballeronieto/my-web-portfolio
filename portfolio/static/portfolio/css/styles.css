@@ -1,10 +1,10 @@
-/* IMPORT GOOGLE FONTS (Montserrat for titles, Lato for text) */
-@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Montserrat:wght@400;600;800&display=swap');
+/* IMPORT GOOGLE FONTS (Archivo for titles, Space Grotesk for text) */
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 
 /* === 1. GLOBAL TYPOGRAPHY === */
 /* Option 1: Soft Gradient */
 body {
-    font-family: 'Lato', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     color: #2c3e50;
     
     background-color: #ffffff;
@@ -14,21 +14,30 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6, .navbar-brand {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Archivo', sans-serif;
     font-weight: 700; /* Strong bold for impact */
     letter-spacing: -0.5px; /* A modern touch */
 }
 
-/* === 2. NAVBAR (Premium Bar with Metallic Line) === */
+/* === 2. NAVBAR (Floating Solid Dark Design) === */
 .navbar {
+    position: sticky;
+    top: 1rem;
+    z-index: 1020;
+    margin: 1rem 1.5rem;
+    border-radius: 16px;
     background-color: #1a1a1a !important;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-    
-    /* TECH LINE (Steel/Titanium Style) */
-    border-bottom: 2px solid transparent;
-    /* Gradient: Dark Gray -> Light Silver -> Dark Gray */
-    border-image: linear-gradient(to right, #343a40, #ced4da, #343a40) 1;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    border: 1px solid #343a40 !important;
+    overflow: hidden; /* Clips the dna-border canvas */
+    transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        margin: 0.75rem 1rem;
+        border-radius: 12px;
+    }
 }
 
 /* Navbar links */
@@ -61,6 +70,10 @@ h1, h2, h3, h4, h5, h6, .navbar-brand {
     overflow: hidden; /* So the image doesn't overflow when zooming */
 }
 
+.project-card, .cursor-pointer {
+    cursor: pointer !important;
+}
+
 /* When hovering, the card rises and gains shadow */
 .card:hover {
     transform: translateY(-8px);
@@ -84,6 +97,7 @@ h1, h2, h3, h4, h5, h6, .navbar-brand {
     font-size: 0.8rem;
     letter-spacing: 1px;
     transition: all 0.3s ease;
+    cursor: pointer;
 }
 
 .btn-dark:hover {
@@ -141,18 +155,36 @@ h1, h2, h3, h4, h5, h6, .navbar-brand {
 }
 
 /* =========================================
-   8. INVISIBLE SCROLLBAR (Clean Look)
+   8. RESPONSIVE SCROLLBAR SETTINGS
    ========================================= */
 
-/* For Chrome, Safari, Edge, and Opera */
-html::-webkit-scrollbar {
-    display: none; /* Hides the element visually */
+/* Desktop layout (>= 992px): Show custom gear, hide native scrollbar */
+@media (min-width: 992px) {
+    html, body {
+        scrollbar-width: none !important;
+        -ms-overflow-style: none !important;
+    }
+    html::-webkit-scrollbar, body::-webkit-scrollbar {
+        display: none !important;
+    }
+    #scrollbarContainer {
+        display: block !important;
+    }
 }
 
-/* For Firefox, IE, and old Edge */
-html {
-    scrollbar-width: none;  /* Firefox */
-    -ms-overflow-style: none;  /* IE and Edge */
+/* Mobile/Tablet layout (< 992px): Hide custom gear, show native scrollbar */
+@media (max-width: 991.98px) {
+    html, body {
+        scrollbar-width: auto !important;
+        -ms-overflow-style: auto !important;
+    }
+    html::-webkit-scrollbar, body::-webkit-scrollbar {
+        display: block !important;
+    }
+    #scrollbarContainer {
+        display: none !important;
+        pointer-events: none;
+    }
 }
 
 /* Custom Accordion styling to match the Titanium/Dark theme */
