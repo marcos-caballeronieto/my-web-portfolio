@@ -65,11 +65,15 @@ class CertificateCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Certificate)
 class CertificateAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'item_type', 'date', 'order', 'is_visible', 'show_on_about')
+    list_display = ('__str__', 'item_type', 'display_categories', 'date', 'order', 'is_visible', 'show_on_about')
     list_editable = ('item_type', 'order', 'is_visible', 'show_on_about')
     list_filter = ('item_type', 'is_visible', 'show_on_about', 'categories')
     search_fields = ('title', 'title_en', 'title_es', 'subtitle', 'subtitle_en', 'subtitle_es')
     filter_horizontal = ('categories',)
+
+    @admin.display(description="Categories")
+    def display_categories(self, obj):
+        return ", ".join(str(c) for c in obj.categories.all()) or "-"
     fieldsets = (
         ("General", {
             "fields": (
