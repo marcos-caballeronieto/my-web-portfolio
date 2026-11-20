@@ -48,11 +48,19 @@ class ProjectAdmin(admin.ModelAdmin):
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(Category)
 
+class CertificateCategoryInline(admin.TabularInline):
+    model = Certificate.categories.through
+    extra = 1
+    verbose_name = "Certificate / Course"
+    verbose_name_plural = "Certificates & Courses"
+
+
 @admin.register(CertificateCategory)
 class CertificateCategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'name_en', 'name_es', 'is_main', 'order')
     list_editable = ('is_main', 'order')
     search_fields = ('name', 'name_en', 'name_es')
+    inlines = [CertificateCategoryInline]
 
 
 @admin.register(Certificate)
