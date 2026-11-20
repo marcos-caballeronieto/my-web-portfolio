@@ -25,6 +25,8 @@ urlpatterns = [
     path("ckeditor5/", include('django_ckeditor_5.urls')),
     path('', views.home, name='home'),
     path('about/', views.about, name='about'),  
+    path('certificates/', views.certificates_list, name='certificates_list'),
+    path('skills/', views.skills_list, name='skills_list'),
     path('project/<slug:slug>/', views.project_detail, name='project_detail'),
     path('projects/', views.project_list, name='project_list'),
     path('miniprojects/', views.mini_projects_list, name='mini_projects_list'),

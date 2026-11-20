@@ -158,11 +158,41 @@ class Project(models.Model):
         return self.list_html_content
     
 
+class CertificateCategory(models.Model):
+    """
+    Represents a category for grouping certificates and courses.
+    Supports bilingual names and ordering/display prominence.
+    """
+    name = models.CharField(max_length=100, unique=True, verbose_name="Name (Default/EN)")
+    name_en = models.CharField(max_length=100, blank=True, verbose_name="Name (EN)")
+    name_es = models.CharField(max_length=100, blank=True, verbose_name="Name (ES)")
+    is_main = models.BooleanField(default=True, help_text="Show as a prominent button instead of in the dropdown")
+    order = models.PositiveIntegerField(default=0, help_text="Display order (lower numbers appear first)")
+
+    class Meta:
+        ordering = ['order', 'name']
+        verbose_name = "Certificate / Course Category"
+        verbose_name_plural = "Certificate / Course Categories"
+
+    def __str__(self):
+        return self.name_en or self.name_es or self.name
+
+
 class Certificate(models.Model):
     """
-    Represents a certificate or achievement.
-    Includes icon, title, subtitle, description, date, and optional URL.
+    Represents a certificate, course, or achievement.
+    Includes icon, title, subtitle, description, date, categories, visibility, and optional URL.
     """
+    class ItemType(models.TextChoices):
+        CERTIFICATE = 'CERTIFICATE', 'Certificate'
+        COURSE = 'COURSE', 'Course'
+
+    item_type = models.CharField(
+        max_length=20,
+        choices=ItemType.choices,
+        default=ItemType.CERTIFICATE,
+        verbose_name="Type"
+    )
     icon = models.CharField(max_length=10, default='📜', verbose_name="Icon/Emoji")
     icon_file = models.FileField(upload_to='certificates/icons/', blank=True, null=True, verbose_name="Icon SVG/PNG")
     title = models.CharField(max_length=200, verbose_name="Title")
@@ -176,12 +206,83 @@ class Certificate(models.Model):
     description_es = CKEditor5Field(verbose_name="Description (ES)", config_name='default', blank=True)
     date = models.DateField(verbose_name="Date Obtained")
     url = models.URLField(blank=True, null=True, verbose_name="Link (Optional)")
+    categories = models.ManyToManyField(
+        CertificateCategory,
+        blank=True,
+        related_name='certificates',
+        verbose_name="Categories"
+    )
+    order = models.PositiveIntegerField(default=0, help_text="Display order (lower numbers appear first)")
+    is_visible = models.BooleanField(default=True, verbose_name="Visible", help_text="Show this item on the portfolio")
+    show_on_about = models.BooleanField(default=True, verbose_name="Show on About Me", help_text="Display in the About Me summary section")
 
     class Meta:
-        ordering = ['-date'] # Automatically order by date descending
-        verbose_name = "Certificate / Project"
-        verbose_name_plural = "Certificates & Projects"
+        ordering = ['order', '-date']
+        verbose_name = "Certificate / Course"
+        verbose_name_plural = "Certificates & Courses"
 
     def __str__(self):
         return self.title_en or self.title_es or self.title
+
+
+class SkillCategory(models.Model):
+    """
+    Represents a category for organizing technical and domain skills.
+    Supports bilingual names/descriptions, icons, ordering, and visibility.
+    """
+    name = models.CharField(max_length=100, unique=True, verbose_name="Name (Default/EN)")
+    name_en = models.CharField(max_length=100, blank=True, verbose_name="Name (EN)")
+    name_es = models.CharField(max_length=100, blank=True, verbose_name="Name (ES)")
+    description_en = models.TextField(blank=True, verbose_name="Description (EN)")
+    description_es = models.TextField(blank=True, verbose_name="Description (ES)")
+    icon = models.CharField(
+        max_length=100,
+        default='fas fa-tools',
+        verbose_name="FontAwesome Icon Class or Emoji",
+        help_text="e.g. 'fas fa-brain', 'fas fa-robot'"
+    )
+    icon_file = models.FileField(upload_to='skills/category_icons/', blank=True, null=True, verbose_name="Icon SVG/PNG")
+    is_main = models.BooleanField(default=True, help_text="Show as a prominent button instead of in the dropdown")
+    order = models.PositiveIntegerField(default=0, help_text="Display order (lower numbers appear first)")
+    is_visible = models.BooleanField(default=True, verbose_name="Visible")
+
+    class Meta:
+        ordering = ['order', 'name']
+        verbose_name = "Skill Category"
+        verbose_name_plural = "Skill Categories"
+
+    def __str__(self):
+        return self.name_en or self.name_es or self.name
+
+
+class Skill(models.Model):
+    """
+    Represents an individual skill belonging to a SkillCategory.
+    Supports bilingual names/descriptions, optional icon/URL, ordering, and visibility.
+    """
+    name = models.CharField(max_length=100, verbose_name="Skill Name (Default/EN)")
+    name_en = models.CharField(max_length=100, blank=True, verbose_name="Skill Name (EN)")
+    name_es = models.CharField(max_length=100, blank=True, verbose_name="Skill Name (ES)")
+    description_en = models.TextField(blank=True, verbose_name="Description (EN)")
+    description_es = models.TextField(blank=True, verbose_name="Description (ES)")
+    icon = models.CharField(max_length=100, blank=True, verbose_name="FontAwesome Icon Class or Emoji")
+    icon_file = models.FileField(upload_to='skills/icons/', blank=True, null=True, verbose_name="Icon SVG/PNG")
+    category = models.ForeignKey(
+        SkillCategory,
+        on_delete=models.CASCADE,
+        related_name='skills',
+        verbose_name="Category"
+    )
+    url = models.URLField(blank=True, null=True, verbose_name="Link (Optional)")
+    order = models.PositiveIntegerField(default=0, help_text="Display order within category (lower numbers appear first)")
+    is_visible = models.BooleanField(default=True, verbose_name="Visible")
+    show_on_about = models.BooleanField(default=True, verbose_name="Show on About Me")
+
+    class Meta:
+        ordering = ['category__order', 'order', 'name']
+        verbose_name = "Skill"
+        verbose_name_plural = "Skills"
+
+    def __str__(self):
+        return self.name_en or self.name_es or self.name
     

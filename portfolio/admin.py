@@ -1,5 +1,12 @@
 from django.contrib import admin
-from .models import Project, Category, Certificate
+from .models import (
+    Project,
+    Category,
+    Certificate,
+    CertificateCategory,
+    SkillCategory,
+    Skill,
+)
 
 class ProjectAdmin(admin.ModelAdmin):
     """
@@ -41,11 +48,33 @@ class ProjectAdmin(admin.ModelAdmin):
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(Category)
 
+@admin.register(CertificateCategory)
+class CertificateCategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'name_en', 'name_es', 'is_main', 'order')
+    list_editable = ('is_main', 'order')
+    search_fields = ('name', 'name_en', 'name_es')
+
+
 @admin.register(Certificate)
 class CertificateAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'item_type', 'date', 'order', 'is_visible', 'show_on_about')
+    list_editable = ('item_type', 'order', 'is_visible', 'show_on_about')
+    list_filter = ('item_type', 'is_visible', 'show_on_about', 'categories')
+    search_fields = ('title', 'title_en', 'title_es', 'subtitle', 'subtitle_en', 'subtitle_es')
+    filter_horizontal = ('categories',)
     fieldsets = (
         ("General", {
-            "fields": ("icon", "icon_file", "date", "url")
+            "fields": (
+                "item_type",
+                "icon",
+                "icon_file",
+                "date",
+                "url",
+                "categories",
+                "order",
+                "is_visible",
+                "show_on_about",
+            )
         }),
         ("English", {
             "fields": ("title_en", "subtitle_en", "description_en")
@@ -57,3 +86,25 @@ class CertificateAdmin(admin.ModelAdmin):
             "fields": ("title", "subtitle", "description")
         }),
     )
+
+
+class SkillInline(admin.TabularInline):
+    model = Skill
+    extra = 1
+    fields = ('name', 'name_en', 'name_es', 'icon', 'order', 'is_visible', 'show_on_about')
+
+
+@admin.register(SkillCategory)
+class SkillCategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'name_en', 'name_es', 'icon', 'is_main', 'order', 'is_visible')
+    list_editable = ('is_main', 'order', 'is_visible')
+    search_fields = ('name', 'name_en', 'name_es')
+    inlines = [SkillInline]
+
+
+@admin.register(Skill)
+class SkillAdmin(admin.ModelAdmin):
+    list_display = ('name', 'category', 'name_en', 'name_es', 'order', 'is_visible', 'show_on_about')
+    list_editable = ('order', 'is_visible', 'show_on_about')
+    list_filter = ('category', 'is_visible', 'show_on_about')
+    search_fields = ('name', 'name_en', 'name_es', 'description_en', 'description_es')

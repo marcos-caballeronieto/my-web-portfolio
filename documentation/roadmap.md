@@ -40,7 +40,7 @@ This document outlines completed work and the next planned features for the Web 
 
 ## 5. Certificates, Courses, and Skills Content
 **Goal**: Make certificates, courses, and skills manageable as structured content through Django Admin and present them on their own categorized pages.
-- **Status**: **Planned**
+- **Status**: **Completed**
 - **Backend (Models)**:
   - Keep certificates as an editable Django model and extend or adapt the content model as needed to represent both certificates and courses.
   - Add a `Skill` model editable from Django Admin.

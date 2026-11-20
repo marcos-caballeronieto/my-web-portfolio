@@ -1,0 +1,307 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+
+        <div class="text-center mb-4">
+            <div class="btn-group shadow-sm" role="group" aria-label="Language Toggle">
+                <button type="button" class="btn btn-dark px-4 cursor-pointer" id="btn-en" onclick="showEnglish()">
+                    🇺🇸 English
+                </button>
+                <button type="button" class="btn btn-outline-dark px-4 cursor-pointer" id="btn-es" onclick="showSpanish()">
+                    🇪🇸 Español
+                </button>
+            </div>
+        </div>
+
+        <!-- ENGLISH CONTENT -->
+        <div id="english-content">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+                <div>
+                    <h1 class="m-0 fw-bold"><i class="fas fa-tools me-2 text-dark"></i>Technical Skills</h1>
+                    <p class="text-muted mb-0 mt-1">A practical skill set built through biomedical engineering, AI research, and software development.</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'certificates_list' %}" class="btn btn-outline-dark btn-sm">
+                        <i class="fas fa-trophy me-1"></i> Certificates & Courses
+                    </a>
+                    <a href="{% url 'about' %}" class="btn btn-outline-secondary btn-sm">
+                        &larr; About Me
+                    </a>
+                </div>
+            </div>
+
+            <!-- Category Filter -->
+            {% if main_categories or other_categories %}
+            <div class="text-center mb-4 d-flex justify-content-center flex-wrap gap-2">
+                <a href="{% url 'skills_list' %}"
+                   class="btn {% if not active_category %}btn-dark{% else %}btn-outline-dark{% endif %} btn-sm px-3">
+                    All Categories
+                </a>
+
+                {% for category in main_categories %}
+                    <a href="?category={{ category.name|urlencode }}"
+                       class="btn {% if active_category == category.name %}btn-dark{% else %}btn-outline-dark{% endif %} btn-sm px-3">
+                        {{ category.name_en|default:category.name }}
+                    </a>
+                {% endfor %}
+
+                {% if other_categories %}
+                    <div class="dropdown">
+                        <button class="btn btn-outline-dark btn-sm dropdown-toggle px-3" type="button" id="skillsDropdownEn" data-bs-toggle="dropdown" aria-expanded="false">
+                            More Categories
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="skillsDropdownEn">
+                            {% for category in other_categories %}
+                                <li>
+                                    <a class="dropdown-item {% if active_category == category.name %}active{% endif %}"
+                                       href="?category={{ category.name|urlencode }}">
+                                        {{ category.name_en|default:category.name }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {% if skill_categories %}
+                <div class="row row-cols-1 row-cols-md-2 g-4 mb-5">
+                    {% for category in skill_categories %}
+                    <div class="col">
+                        <div class="card h-100 shadow-sm border-0">
+                            <div class="card-body p-4 d-flex flex-column">
+                                <h5 class="card-title fw-bold d-flex align-items-center mb-2">
+                                    {% if category.icon_file %}
+                                        <img src="{{ category.icon_file.url }}" alt="{{ category.name_en|default:category.name }}" class="me-2" style="width: 24px; height: 24px; object-fit: contain;">
+                                    {% elif category.icon %}
+                                        {% if 'fa-' in category.icon %}
+                                            <i class="{{ category.icon }} me-2 text-primary"></i>
+                                        {% else %}
+                                            <span class="me-2">{{ category.icon }}</span>
+                                        {% endif %}
+                                    {% endif %}
+                                    <span>{{ category.name_en|default:category.name }}</span>
+                                </h5>
+
+                                {% if category.description_en or category.description_es %}
+                                    <p class="text-muted small mb-3">{{ category.description_en|default:category.description_es }}</p>
+                                {% endif %}
+
+                                <div class="d-flex flex-wrap gap-2 mt-auto">
+                                    {% for skill in category.skills.all %}
+                                        {% if skill.url %}
+                                            <a href="{{ skill.url }}"
+                                               target="_blank"
+                                               class="badge bg-dark text-decoration-none d-inline-flex align-items-center gap-1 py-2 px-3"
+                                               {% if skill.description_en or skill.description_es %}title="{{ skill.description_en|default:skill.description_es }}"{% endif %}>
+                                                {% if skill.icon_file %}
+                                                    <img src="{{ skill.icon_file.url }}" alt="" style="width: 14px; height: 14px; object-fit: contain;">
+                                                {% elif skill.icon %}
+                                                    {% if 'fa-' in skill.icon %}
+                                                        <i class="{{ skill.icon }}"></i>
+                                                    {% else %}
+                                                        <span>{{ skill.icon }}</span>
+                                                    {% endif %}
+                                                {% endif %}
+                                                <span>{{ skill.name_en|default:skill.name }}</span>
+                                            </a>
+                                        {% else %}
+                                            <span class="badge bg-dark d-inline-flex align-items-center gap-1 py-2 px-3"
+                                                  {% if skill.description_en or skill.description_es %}title="{{ skill.description_en|default:skill.description_es }}"{% endif %}>
+                                                {% if skill.icon_file %}
+                                                    <img src="{{ skill.icon_file.url }}" alt="" style="width: 14px; height: 14px; object-fit: contain;">
+                                                {% elif skill.icon %}
+                                                    {% if 'fa-' in skill.icon %}
+                                                        <i class="{{ skill.icon }}"></i>
+                                                    {% else %}
+                                                        <span>{{ skill.icon }}</span>
+                                                    {% endif %}
+                                                {% endif %}
+                                                <span>{{ skill.name_en|default:skill.name }}</span>
+                                            </span>
+                                        {% endif %}
+                                    {% empty %}
+                                        <span class="text-muted small fst-italic">No skills in this category yet.</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <div class="mb-4">
+                        <i class="fas fa-tools fa-3x text-muted mb-3"></i>
+                        <h4 class="text-muted">No skills found</h4>
+                        <p class="text-muted">
+                            There are no skill categories to show{% if active_category %} for "<strong>{{ active_category }}</strong>"{% endif %}.
+                        </p>
+                    </div>
+                    <a href="{% url 'skills_list' %}" class="btn btn-dark px-4">
+                        View All
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- SPANISH CONTENT -->
+        <div id="spanish-content" style="display: none;">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+                <div>
+                    <h1 class="m-0 fw-bold"><i class="fas fa-tools me-2 text-dark"></i>Habilidades Técnicas</h1>
+                    <p class="text-muted mb-0 mt-1">Un conjunto práctico desarrollado mediante proyectos biomédicos, investigación en IA y desarrollo de software.</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'certificates_list' %}?lang=es" class="btn btn-outline-dark btn-sm">
+                        <i class="fas fa-trophy me-1"></i> Certificados y Cursos
+                    </a>
+                    <a href="{% url 'about' %}?lang=es" class="btn btn-outline-secondary btn-sm">
+                        &larr; Sobre Mí
+                    </a>
+                </div>
+            </div>
+
+            <!-- Category Filter -->
+            {% if main_categories or other_categories %}
+            <div class="text-center mb-4 d-flex justify-content-center flex-wrap gap-2">
+                <a href="{% url 'skills_list' %}?lang=es"
+                   class="btn {% if not active_category %}btn-dark{% else %}btn-outline-dark{% endif %} btn-sm px-3">
+                    Todas las Categorías
+                </a>
+
+                {% for category in main_categories %}
+                    <a href="?lang=es&category={{ category.name|urlencode }}"
+                       class="btn {% if active_category == category.name %}btn-dark{% else %}btn-outline-dark{% endif %} btn-sm px-3">
+                        {{ category.name_es|default:category.name }}
+                    </a>
+                {% endfor %}
+
+                {% if other_categories %}
+                    <div class="dropdown">
+                        <button class="btn btn-outline-dark btn-sm dropdown-toggle px-3" type="button" id="skillsDropdownEs" data-bs-toggle="dropdown" aria-expanded="false">
+                            Más Categorías
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="skillsDropdownEs">
+                            {% for category in other_categories %}
+                                <li>
+                                    <a class="dropdown-item {% if active_category == category.name %}active{% endif %}"
+                                       href="?lang=es&category={{ category.name|urlencode }}">
+                                        {{ category.name_es|default:category.name }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {% if skill_categories %}
+                <div class="row row-cols-1 row-cols-md-2 g-4 mb-5">
+                    {% for category in skill_categories %}
+                    <div class="col">
+                        <div class="card h-100 shadow-sm border-0">
+                            <div class="card-body p-4 d-flex flex-column">
+                                <h5 class="card-title fw-bold d-flex align-items-center mb-2">
+                                    {% if category.icon_file %}
+                                        <img src="{{ category.icon_file.url }}" alt="{{ category.name_es|default:category.name }}" class="me-2" style="width: 24px; height: 24px; object-fit: contain;">
+                                    {% elif category.icon %}
+                                        {% if 'fa-' in category.icon %}
+                                            <i class="{{ category.icon }} me-2 text-primary"></i>
+                                        {% else %}
+                                            <span class="me-2">{{ category.icon }}</span>
+                                        {% endif %}
+                                    {% endif %}
+                                    <span>{{ category.name_es|default:category.name }}</span>
+                                </h5>
+
+                                {% if category.description_es or category.description_en %}
+                                    <p class="text-muted small mb-3">{{ category.description_es|default:category.description_en }}</p>
+                                {% endif %}
+
+                                <div class="d-flex flex-wrap gap-2 mt-auto">
+                                    {% for skill in category.skills.all %}
+                                        {% if skill.url %}
+                                            <a href="{{ skill.url }}"
+                                               target="_blank"
+                                               class="badge bg-dark text-decoration-none d-inline-flex align-items-center gap-1 py-2 px-3"
+                                               {% if skill.description_es or skill.description_en %}title="{{ skill.description_es|default:skill.description_en }}"{% endif %}>
+                                                {% if skill.icon_file %}
+                                                    <img src="{{ skill.icon_file.url }}" alt="" style="width: 14px; height: 14px; object-fit: contain;">
+                                                {% elif skill.icon %}
+                                                    {% if 'fa-' in skill.icon %}
+                                                        <i class="{{ skill.icon }}"></i>
+                                                    {% else %}
+                                                        <span>{{ skill.icon }}</span>
+                                                    {% endif %}
+                                                {% endif %}
+                                                <span>{{ skill.name_es|default:skill.name }}</span>
+                                            </a>
+                                        {% else %}
+                                            <span class="badge bg-dark d-inline-flex align-items-center gap-1 py-2 px-3"
+                                                  {% if skill.description_es or skill.description_en %}title="{{ skill.description_es|default:skill.description_en }}"{% endif %}>
+                                                {% if skill.icon_file %}
+                                                    <img src="{{ skill.icon_file.url }}" alt="" style="width: 14px; height: 14px; object-fit: contain;">
+                                                {% elif skill.icon %}
+                                                    {% if 'fa-' in skill.icon %}
+                                                        <i class="{{ skill.icon }}"></i>
+                                                    {% else %}
+                                                        <span>{{ skill.icon }}</span>
+                                                    {% endif %}
+                                                {% endif %}
+                                                <span>{{ skill.name_es|default:skill.name }}</span>
+                                            </span>
+                                        {% endif %}
+                                    {% empty %}
+                                        <span class="text-muted small fst-italic">No hay habilidades en esta categoría aún.</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <div class="mb-4">
+                        <i class="fas fa-tools fa-3x text-muted mb-3"></i>
+                        <h4 class="text-muted">No se encontraron habilidades</h4>
+                        <p class="text-muted">
+                            No hay categorías de habilidades para mostrar{% if active_category %} para "<strong>{{ active_category }}</strong>"{% endif %}.
+                        </p>
+                    </div>
+                    <a href="{% url 'skills_list' %}?lang=es" class="btn btn-dark px-4">
+                        Ver Todas
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function showEnglish() {
+        document.getElementById('english-content').style.display = 'block';
+        document.getElementById('spanish-content').style.display = 'none';
+        document.getElementById('btn-en').className = 'btn btn-dark px-4 cursor-pointer';
+        document.getElementById('btn-es').className = 'btn btn-outline-dark px-4 cursor-pointer';
+    }
+
+    function showSpanish() {
+        document.getElementById('spanish-content').style.display = 'block';
+        document.getElementById('english-content').style.display = 'none';
+        document.getElementById('btn-en').className = 'btn btn-outline-dark px-4 cursor-pointer';
+        document.getElementById('btn-es').className = 'btn btn-dark px-4 cursor-pointer';
+    }
+
+    {% if language == 'es' %}
+    showSpanish();
+    {% endif %}
+</script>
+{% endblock %}

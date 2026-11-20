@@ -1,0 +1,312 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load markdown_filters %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+
+        <div class="text-center mb-4">
+            <div class="btn-group shadow-sm" role="group" aria-label="Language Toggle">
+                <button type="button" class="btn btn-dark px-4 cursor-pointer" id="btn-en" onclick="showEnglish()">
+                    🇺🇸 English
+                </button>
+                <button type="button" class="btn btn-outline-dark px-4 cursor-pointer" id="btn-es" onclick="showSpanish()">
+                    🇪🇸 Español
+                </button>
+            </div>
+        </div>
+
+        <!-- ENGLISH CONTENT -->
+        <div id="english-content">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+                <div>
+                    <h1 class="m-0 fw-bold"><i class="fas fa-trophy me-2 text-dark"></i>Certificates & Courses</h1>
+                    <p class="text-muted mb-0 mt-1">Verified credentials, specializations, and technical courses.</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'skills_list' %}" class="btn btn-outline-dark btn-sm">
+                        <i class="fas fa-tools me-1"></i> Skills
+                    </a>
+                    <a href="{% url 'about' %}" class="btn btn-outline-secondary btn-sm">
+                        &larr; About Me
+                    </a>
+                </div>
+            </div>
+
+            <!-- Type Filter -->
+            <div class="text-center mb-3 d-flex justify-content-center flex-wrap gap-2">
+                <a href="?{% if active_category %}category={{ active_category|urlencode }}{% endif %}"
+                   class="btn {% if not active_type %}btn-dark{% else %}btn-outline-dark{% endif %} btn-sm px-3">
+                    All
+                </a>
+                <a href="?type=CERTIFICATE{% if active_category %}&category={{ active_category|urlencode }}{% endif %}"
+                   class="btn {% if active_type == 'CERTIFICATE' %}btn-dark{% else %}btn-outline-dark{% endif %} btn-sm px-3">
+                    Certificates
+                </a>
+                <a href="?type=COURSE{% if active_category %}&category={{ active_category|urlencode }}{% endif %}"
+                   class="btn {% if active_type == 'COURSE' %}btn-dark{% else %}btn-outline-dark{% endif %} btn-sm px-3">
+                    Courses
+                </a>
+            </div>
+
+            <!-- Category Filter -->
+            {% if main_categories or other_categories %}
+            <div class="text-center mb-4 d-flex justify-content-center flex-wrap gap-2">
+                <a href="?{% if active_type %}type={{ active_type|urlencode }}{% endif %}"
+                   class="btn {% if not active_category %}btn-dark{% else %}btn-outline-dark{% endif %} btn-sm px-3">
+                    All Categories
+                </a>
+
+                {% for category in main_categories %}
+                    <a href="?category={{ category.name|urlencode }}{% if active_type %}&type={{ active_type|urlencode }}{% endif %}"
+                       class="btn {% if active_category == category.name %}btn-dark{% else %}btn-outline-dark{% endif %} btn-sm px-3">
+                        {{ category.name_en|default:category.name }}
+                    </a>
+                {% endfor %}
+
+                {% if other_categories %}
+                    <div class="dropdown">
+                        <button class="btn btn-outline-dark btn-sm dropdown-toggle px-3" type="button" id="certDropdownEn" data-bs-toggle="dropdown" aria-expanded="false">
+                            More Categories
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="certDropdownEn">
+                            {% for category in other_categories %}
+                                <li>
+                                    <a class="dropdown-item {% if active_category == category.name %}active{% endif %}"
+                                       href="?category={{ category.name|urlencode }}{% if active_type %}&type={{ active_type|urlencode }}{% endif %}">
+                                        {{ category.name_en|default:category.name }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {% if certificates %}
+                <div class="accordion mb-5" id="accordionCertificatesPageEn">
+                    {% for cert in certificates %}
+                    <div class="accordion-item mb-3 shadow-sm border rounded overflow-hidden">
+                        <h2 class="accordion-header" id="heading-certpage-en-{{ cert.id }}">
+                            <button class="accordion-button collapsed bg-white py-3 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-certpage-en-{{ cert.id }}" aria-expanded="false" aria-controls="collapse-certpage-en-{{ cert.id }}">
+                                <div class="d-flex align-items-center justify-content-between w-100 me-3 flex-wrap gap-2">
+                                    <div class="d-flex align-items-center">
+                                        <div class="me-3 flex-shrink-0">
+                                            {% if cert.icon_file %}
+                                                <img src="{{ cert.icon_file.url }}" alt="{{ cert.title_en|default:cert.title }}" style="width: 40px; height: 40px; object-fit: contain;">
+                                            {% else %}
+                                                <div class="fs-3">{{ cert.icon }}</div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="text-start">
+                                            <h6 class="fw-bold mb-1 text-dark">{{ cert.title_en|default:cert.title }}</h6>
+                                            <small class="text-primary fw-bold">
+                                                {{ cert.subtitle_en|default:cert.subtitle }}
+                                                <span class="text-muted fw-normal"> | {{ cert.date|date:"F Y" }}</span>
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex flex-wrap gap-1 align-items-center">
+                                        {% if cert.item_type == 'COURSE' %}
+                                            <span class="badge bg-secondary">Course</span>
+                                        {% else %}
+                                            <span class="badge bg-dark">Certificate</span>
+                                        {% endif %}
+                                        {% for cat in cert.categories.all %}
+                                            <span class="badge bg-light text-dark border">{{ cat.name_en|default:cat.name }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </button>
+                        </h2>
+                        <div id="collapse-certpage-en-{{ cert.id }}" class="accordion-collapse collapse" aria-labelledby="heading-certpage-en-{{ cert.id }}" data-bs-parent="#accordionCertificatesPageEn">
+                            <div class="accordion-body bg-light border-top pt-3">
+                                <div class="text-muted small mb-3">
+                                    {{ cert.description_en|default:cert.description|render_markdown|safe }}
+                                </div>
+                                {% if cert.url %}
+                                <a href="{{ cert.url }}" target="_blank" class="btn btn-sm btn-dark px-3 py-1" style="font-size: 0.75rem;">
+                                    <i class="fas fa-external-link-alt me-1"></i> View Credential
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <div class="mb-4">
+                        <i class="fas fa-award fa-3x text-muted mb-3"></i>
+                        <h4 class="text-muted">No certificates or courses found</h4>
+                        <p class="text-muted">
+                            There are no items matching the selected filters{% if active_category %} in "<strong>{{ active_category }}</strong>"{% endif %}.
+                        </p>
+                    </div>
+                    <a href="{% url 'certificates_list' %}" class="btn btn-dark px-4">
+                        View All
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- SPANISH CONTENT -->
+        <div id="spanish-content" style="display: none;">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+                <div>
+                    <h1 class="m-0 fw-bold"><i class="fas fa-trophy me-2 text-dark"></i>Certificados y Cursos</h1>
+                    <p class="text-muted mb-0 mt-1">Credenciales verificadas, especializaciones y cursos técnicos.</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'skills_list' %}?lang=es" class="btn btn-outline-dark btn-sm">
+                        <i class="fas fa-tools me-1"></i> Habilidades
+                    </a>
+                    <a href="{% url 'about' %}?lang=es" class="btn btn-outline-secondary btn-sm">
+                        &larr; Sobre Mí
+                    </a>
+                </div>
+            </div>
+
+            <!-- Type Filter -->
+            <div class="text-center mb-3 d-flex justify-content-center flex-wrap gap-2">
+                <a href="?lang=es{% if active_category %}&category={{ active_category|urlencode }}{% endif %}"
+                   class="btn {% if not active_type %}btn-dark{% else %}btn-outline-dark{% endif %} btn-sm px-3">
+                    Todos
+                </a>
+                <a href="?lang=es&type=CERTIFICATE{% if active_category %}&category={{ active_category|urlencode }}{% endif %}"
+                   class="btn {% if active_type == 'CERTIFICATE' %}btn-dark{% else %}btn-outline-dark{% endif %} btn-sm px-3">
+                    Certificados
+                </a>
+                <a href="?lang=es&type=COURSE{% if active_category %}&category={{ active_category|urlencode }}{% endif %}"
+                   class="btn {% if active_type == 'COURSE' %}btn-dark{% else %}btn-outline-dark{% endif %} btn-sm px-3">
+                    Cursos
+                </a>
+            </div>
+
+            <!-- Category Filter -->
+            {% if main_categories or other_categories %}
+            <div class="text-center mb-4 d-flex justify-content-center flex-wrap gap-2">
+                <a href="?lang=es{% if active_type %}&type={{ active_type|urlencode }}{% endif %}"
+                   class="btn {% if not active_category %}btn-dark{% else %}btn-outline-dark{% endif %} btn-sm px-3">
+                    Todas las Categorías
+                </a>
+
+                {% for category in main_categories %}
+                    <a href="?lang=es&category={{ category.name|urlencode }}{% if active_type %}&type={{ active_type|urlencode }}{% endif %}"
+                       class="btn {% if active_category == category.name %}btn-dark{% else %}btn-outline-dark{% endif %} btn-sm px-3">
+                        {{ category.name_es|default:category.name }}
+                    </a>
+                {% endfor %}
+
+                {% if other_categories %}
+                    <div class="dropdown">
+                        <button class="btn btn-outline-dark btn-sm dropdown-toggle px-3" type="button" id="certDropdownEs" data-bs-toggle="dropdown" aria-expanded="false">
+                            Más Categorías
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="certDropdownEs">
+                            {% for category in other_categories %}
+                                <li>
+                                    <a class="dropdown-item {% if active_category == category.name %}active{% endif %}"
+                                       href="?lang=es&category={{ category.name|urlencode }}{% if active_type %}&type={{ active_type|urlencode }}{% endif %}">
+                                        {{ category.name_es|default:category.name }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {% if certificates %}
+                <div class="accordion mb-5" id="accordionCertificatesPageEs">
+                    {% for cert in certificates %}
+                    <div class="accordion-item mb-3 shadow-sm border rounded overflow-hidden">
+                        <h2 class="accordion-header" id="heading-certpage-es-{{ cert.id }}">
+                            <button class="accordion-button collapsed bg-white py-3 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-certpage-es-{{ cert.id }}" aria-expanded="false" aria-controls="collapse-certpage-es-{{ cert.id }}">
+                                <div class="d-flex align-items-center justify-content-between w-100 me-3 flex-wrap gap-2">
+                                    <div class="d-flex align-items-center">
+                                        <div class="me-3 flex-shrink-0">
+                                            {% if cert.icon_file %}
+                                                <img src="{{ cert.icon_file.url }}" alt="{{ cert.title_es|default:cert.title }}" style="width: 40px; height: 40px; object-fit: contain;">
+                                            {% else %}
+                                                <div class="fs-3">{{ cert.icon }}</div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="text-start">
+                                            <h6 class="fw-bold mb-1 text-dark">{{ cert.title_es|default:cert.title }}</h6>
+                                            <small class="text-primary fw-bold">
+                                                {{ cert.subtitle_es|default:cert.subtitle }}
+                                                <span class="text-muted fw-normal"> | {{ cert.date|date:"F Y" }}</span>
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex flex-wrap gap-1 align-items-center">
+                                        {% if cert.item_type == 'COURSE' %}
+                                            <span class="badge bg-secondary">Curso</span>
+                                        {% else %}
+                                            <span class="badge bg-dark">Certificado</span>
+                                        {% endif %}
+                                        {% for cat in cert.categories.all %}
+                                            <span class="badge bg-light text-dark border">{{ cat.name_es|default:cat.name }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </button>
+                        </h2>
+                        <div id="collapse-certpage-es-{{ cert.id }}" class="accordion-collapse collapse" aria-labelledby="heading-certpage-es-{{ cert.id }}" data-bs-parent="#accordionCertificatesPageEs">
+                            <div class="accordion-body bg-light border-top pt-3">
+                                <div class="text-muted small mb-3">
+                                    {{ cert.description_es|default:cert.description|render_markdown|safe }}
+                                </div>
+                                {% if cert.url %}
+                                <a href="{{ cert.url }}" target="_blank" class="btn btn-sm btn-dark px-3 py-1" style="font-size: 0.75rem;">
+                                    <i class="fas fa-external-link-alt me-1"></i> Ver Credencial
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <div class="mb-4">
+                        <i class="fas fa-award fa-3x text-muted mb-3"></i>
+                        <h4 class="text-muted">No se encontraron certificados ni cursos</h4>
+                        <p class="text-muted">
+                            No hay elementos que coincidan con los filtros seleccionados{% if active_category %} en "<strong>{{ active_category }}</strong>"{% endif %}.
+                        </p>
+                    </div>
+                    <a href="{% url 'certificates_list' %}?lang=es" class="btn btn-dark px-4">
+                        Ver Todos
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function showEnglish() {
+        document.getElementById('english-content').style.display = 'block';
+        document.getElementById('spanish-content').style.display = 'none';
+        document.getElementById('btn-en').className = 'btn btn-dark px-4 cursor-pointer';
+        document.getElementById('btn-es').className = 'btn btn-outline-dark px-4 cursor-pointer';
+    }
+
+    function showSpanish() {
+        document.getElementById('spanish-content').style.display = 'block';
+        document.getElementById('english-content').style.display = 'none';
+        document.getElementById('btn-en').className = 'btn btn-outline-dark px-4 cursor-pointer';
+        document.getElementById('btn-es').className = 'btn btn-dark px-4 cursor-pointer';
+    }
+
+    {% if language == 'es' %}
+    showSpanish();
+    {% endif %}
+</script>
+{% endblock %}

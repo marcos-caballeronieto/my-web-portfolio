@@ -197,7 +197,12 @@
                             </div>
                         </div>
 
-                        <h4 class="mb-3"><i class="fas fa-trophy me-2 text-dark"></i>Certificates & Courses</h4>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="mb-0"><i class="fas fa-trophy me-2 text-dark"></i>Certificates & Courses</h4>
+                            <a href="{% url 'certificates_list' %}" class="btn btn-outline-dark btn-sm">
+                                View All &rarr;
+                            </a>
+                        </div>
                             
                         <div class="accordion mb-5" id="accordionCertificatesEn">
                             {% for cert in certificates %}
@@ -242,52 +247,46 @@
                             {% endfor %}
                         </div>
 
-                        <h4 class="mt-4"><i class="fas fa-tools me-2 text-dark"></i>Technical Skills</h4>
+                        <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
+                            <h4 class="mb-0"><i class="fas fa-tools me-2 text-dark"></i>Technical Skills</h4>
+                            <a href="{% url 'skills_list' %}" class="btn btn-outline-dark btn-sm">
+                                View All &rarr;
+                            </a>
+                        </div>
                         <p class="text-muted small mb-4">A practical skill set built through biomedical projects, web development, and recent AI certifications.</p>
                         <div class="row g-4">
+                            {% for category in skill_categories %}
                             <div class="col-md-6">
-                                <h6 class="fw-bold"><i class="fas fa-brain me-2 text-primary"></i>Machine Learning & Medical AI</h6>
-                                <p class="small text-muted mb-2">Applied in Chest X-Ray AI: Clinical Triage Optimization.</p>
-                                <span class="badge bg-dark">Supervised Learning</span>
-                                <span class="badge bg-dark">Scikit-Learn</span>
-                                <span class="badge bg-dark">PyTorch</span>
-                                <span class="badge bg-dark">Transfer Learning</span>
-                                <span class="badge bg-dark">Medical Imaging</span>
-                                <span class="badge bg-dark">DenseNet121</span>
+                                <h6 class="fw-bold d-flex align-items-center">
+                                    {% if category.icon_file %}
+                                        <img src="{{ category.icon_file.url }}" alt="{{ category.name_en|default:category.name }}" class="me-2" style="width: 20px; height: 20px; object-fit: contain;">
+                                    {% elif category.icon %}
+                                        {% if 'fa-' in category.icon %}
+                                            <i class="{{ category.icon }} me-2 text-primary"></i>
+                                        {% else %}
+                                            <span class="me-2">{{ category.icon }}</span>
+                                        {% endif %}
+                                    {% endif %}
+                                    <span>{{ category.name_en|default:category.name }}</span>
+                                </h6>
+                                {% if category.description_en or category.description_es %}
+                                    <p class="small text-muted mb-2">{{ category.description_en|default:category.description_es }}</p>
+                                {% endif %}
+                                <div class="d-flex flex-wrap gap-1">
+                                    {% for skill in category.skills.all %}
+                                        {% if skill.url %}
+                                            <a href="{{ skill.url }}" target="_blank" class="badge bg-dark text-decoration-none">{{ skill.name_en|default:skill.name }}</a>
+                                        {% else %}
+                                            <span class="badge bg-dark">{{ skill.name_en|default:skill.name }}</span>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
                             </div>
-
-                            <div class="col-md-6">
-                                <h6 class="fw-bold"><i class="fas fa-robot me-2 text-primary"></i>AI Engineering</h6>
-                                <p class="small text-muted mb-2">Supported by multimodal AI work and agentic development courses.</p>
-                                <span class="badge bg-dark">LLM Evaluation</span>
-                                <span class="badge bg-dark">Prompt Engineering</span>
-                                <span class="badge bg-dark">Multimodal AI</span>
-                                <span class="badge bg-dark">AI-Assisted Development</span>
-                                <span class="badge bg-dark">Coding Agents</span>
-                                <span class="badge bg-dark">Claude Code</span>
+                            {% empty %}
+                            <div class="col-12 text-muted fst-italic">
+                                No skills added yet.
                             </div>
-
-                            <div class="col-md-6">
-                                <h6 class="fw-bold"><i class="fas fa-flask me-2 text-primary"></i>Biomedical & Clinical Computing</h6>
-                                <p class="small text-muted mb-2">Grounded in biomedical engineering and clinical trial projects.</p>
-                                <span class="badge bg-dark">Biomedical Data</span>
-                                <span class="badge bg-dark">Signal Processing</span>
-                                <span class="badge bg-dark">Clinical Algorithms</span>
-                                <span class="badge bg-dark">Randomization</span>
-                                <span class="badge bg-dark">Statistical Balance</span>
-                                <span class="badge bg-dark">Healthcare Applications</span>
-                            </div>
-
-                            <div class="col-md-6">
-                                <h6 class="fw-bold"><i class="fas fa-code me-2 text-primary"></i>Web & Software Engineering</h6>
-                                <p class="small text-muted mb-2">Demonstrated by this Django portfolio and its custom CMS.</p>
-                                <span class="badge bg-dark">Python</span>
-                                <span class="badge bg-dark">Django 5</span>
-                                <span class="badge bg-dark">SQLite</span>
-                                <span class="badge bg-dark">HTML & CSS</span>
-                                <span class="badge bg-dark">Bootstrap</span>
-                                <span class="badge bg-dark">Git & GitHub</span>
-                            </div>
+                            {% endfor %}
                         </div>
 
                         <div class="text-center mt-5">
@@ -472,7 +471,12 @@
                             </div>
                         </div>
 
-                        <h4 class="mb-3"><i class="fas fa-trophy me-2 text-dark"></i>Certificados y Cursos</h4>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="mb-0"><i class="fas fa-trophy me-2 text-dark"></i>Certificados y Cursos</h4>
+                            <a href="{% url 'certificates_list' %}?lang=es" class="btn btn-outline-dark btn-sm">
+                                Ver todos &rarr;
+                            </a>
+                        </div>
                         
                         <div class="accordion mb-5" id="accordionCertificatesEs">
                             {% for cert in certificates %}
@@ -517,52 +521,46 @@
                             {% endfor %}
                         </div>
 
-                        <h4 class="mt-4"><i class="fas fa-tools me-2 text-dark"></i>Habilidades Técnicas</h4>
+                        <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
+                            <h4 class="mb-0"><i class="fas fa-tools me-2 text-dark"></i>Habilidades Técnicas</h4>
+                            <a href="{% url 'skills_list' %}?lang=es" class="btn btn-outline-dark btn-sm">
+                                Ver todas &rarr;
+                            </a>
+                        </div>
                         <p class="text-muted small mb-4">Un conjunto práctico desarrollado mediante proyectos biomédicos, desarrollo web y certificaciones recientes de IA.</p>
                         <div class="row g-4">
+                            {% for category in skill_categories %}
                             <div class="col-md-6">
-                                <h6 class="fw-bold"><i class="fas fa-brain me-2 text-primary"></i>Machine Learning e IA Médica</h6>
-                                <p class="small text-muted mb-2">Aplicado en Chest X-Ray AI: Clinical Triage Optimization.</p>
-                                <span class="badge bg-dark">Aprendizaje Supervisado</span>
-                                <span class="badge bg-dark">Scikit-Learn</span>
-                                <span class="badge bg-dark">PyTorch</span>
-                                <span class="badge bg-dark">Transfer Learning</span>
-                                <span class="badge bg-dark">Imagen Médica</span>
-                                <span class="badge bg-dark">DenseNet121</span>
+                                <h6 class="fw-bold d-flex align-items-center">
+                                    {% if category.icon_file %}
+                                        <img src="{{ category.icon_file.url }}" alt="{{ category.name_es|default:category.name }}" class="me-2" style="width: 20px; height: 20px; object-fit: contain;">
+                                    {% elif category.icon %}
+                                        {% if 'fa-' in category.icon %}
+                                            <i class="{{ category.icon }} me-2 text-primary"></i>
+                                        {% else %}
+                                            <span class="me-2">{{ category.icon }}</span>
+                                        {% endif %}
+                                    {% endif %}
+                                    <span>{{ category.name_es|default:category.name }}</span>
+                                </h6>
+                                {% if category.description_es or category.description_en %}
+                                    <p class="small text-muted mb-2">{{ category.description_es|default:category.description_en }}</p>
+                                {% endif %}
+                                <div class="d-flex flex-wrap gap-1">
+                                    {% for skill in category.skills.all %}
+                                        {% if skill.url %}
+                                            <a href="{{ skill.url }}" target="_blank" class="badge bg-dark text-decoration-none">{{ skill.name_es|default:skill.name }}</a>
+                                        {% else %}
+                                            <span class="badge bg-dark">{{ skill.name_es|default:skill.name }}</span>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
                             </div>
-
-                            <div class="col-md-6">
-                                <h6 class="fw-bold"><i class="fas fa-robot me-2 text-primary"></i>Ingeniería de IA</h6>
-                                <p class="small text-muted mb-2">Respaldada por experiencia con IA multimodal y cursos de desarrollo agéntico.</p>
-                                <span class="badge bg-dark">Evaluación de LLMs</span>
-                                <span class="badge bg-dark">Prompt Engineering</span>
-                                <span class="badge bg-dark">IA Multimodal</span>
-                                <span class="badge bg-dark">Desarrollo con IA</span>
-                                <span class="badge bg-dark">Agentes de Código</span>
-                                <span class="badge bg-dark">Claude Code</span>
+                            {% empty %}
+                            <div class="col-12 text-muted fst-italic">
+                                No hay habilidades añadidas aún.
                             </div>
-
-                            <div class="col-md-6">
-                                <h6 class="fw-bold"><i class="fas fa-flask me-2 text-primary"></i>Computación Biomédica y Clínica</h6>
-                                <p class="small text-muted mb-2">Basada en la formación biomédica y los proyectos de ensayos clínicos.</p>
-                                <span class="badge bg-dark">Datos Biomédicos</span>
-                                <span class="badge bg-dark">Procesado de Señales</span>
-                                <span class="badge bg-dark">Algoritmos Clínicos</span>
-                                <span class="badge bg-dark">Aleatorización</span>
-                                <span class="badge bg-dark">Equilibrio Estadístico</span>
-                                <span class="badge bg-dark">Aplicaciones Sanitarias</span>
-                            </div>
-
-                            <div class="col-md-6">
-                                <h6 class="fw-bold"><i class="fas fa-code me-2 text-primary"></i>Ingeniería Web y de Software</h6>
-                                <p class="small text-muted mb-2">Demostrada en este portfolio Django y su CMS personalizado.</p>
-                                <span class="badge bg-dark">Python</span>
-                                <span class="badge bg-dark">Django 5</span>
-                                <span class="badge bg-dark">SQLite</span>
-                                <span class="badge bg-dark">HTML y CSS</span>
-                                <span class="badge bg-dark">Bootstrap</span>
-                                <span class="badge bg-dark">Git y GitHub</span>
-                            </div>
+                            {% endfor %}
                         </div>
 
                         <div class="text-center mt-5">
@@ -614,6 +612,10 @@
                 // Update back link text to Spanish
                 document.getElementById('back-link').innerHTML = '&larr; Volver al Inicio';
             }
+
+            {% if language == 'es' %}
+            showSpanish();
+            {% endif %}
         </script>
 
 {% endblock %}
