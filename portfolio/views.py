@@ -57,6 +57,7 @@ def about(request):
     skill_categories = (
         SkillCategory.objects.filter(
             is_visible=True,
+            show_on_about=True,
             skills__is_visible=True,
             skills__show_on_about=True,
         )

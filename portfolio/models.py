@@ -245,6 +245,7 @@ class SkillCategory(models.Model):
     is_main = models.BooleanField(default=True, help_text="Show as a prominent button instead of in the dropdown")
     order = models.PositiveIntegerField(default=0, help_text="Display order (lower numbers appear first)")
     is_visible = models.BooleanField(default=True, verbose_name="Visible")
+    show_on_about = models.BooleanField(default=True, verbose_name="Show on About Me", help_text="Display this category in the About Me summary section")
 
     class Meta:
         ordering = ['order', 'name']

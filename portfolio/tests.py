@@ -214,6 +214,19 @@ class ViewTests(TestCase):
             is_visible=False,
             order=20,
         )
+        self.skills_page_only_category = SkillCategory.objects.create(
+            name="Skills Page Only Category",
+            is_main=False,
+            is_visible=True,
+            show_on_about=False,
+            order=25,
+        )
+        self.skills_page_only_cat_skill = Skill.objects.create(
+            name="Skill In Non-About Category",
+            category=self.skills_page_only_category,
+            is_visible=True,
+            show_on_about=True,
+        )
         self.about_skill = Skill.objects.create(
             name="Visible About Skill",
             category=self.skill_category,
@@ -274,6 +287,7 @@ class ViewTests(TestCase):
         self.assertNotIn(self.course, response.context['certificates'])
         self.assertNotIn(self.hidden_certificate, response.context['certificates'])
 
+        self.assertNotIn(self.skills_page_only_category, response.context['skill_categories'])
         cat = next(c for c in response.context['skill_categories'] if c == self.skill_category)
         about_skills = list(cat.skills.all())
         self.assertIn(self.about_skill, about_skills)

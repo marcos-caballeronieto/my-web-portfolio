@@ -96,8 +96,9 @@ class SkillInline(admin.TabularInline):
 
 @admin.register(SkillCategory)
 class SkillCategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'name_en', 'name_es', 'icon', 'is_main', 'order', 'is_visible')
-    list_editable = ('is_main', 'order', 'is_visible')
+    list_display = ('name', 'name_en', 'name_es', 'icon', 'is_main', 'order', 'is_visible', 'show_on_about')
+    list_editable = ('is_main', 'order', 'is_visible', 'show_on_about')
+    list_filter = ('is_main', 'is_visible', 'show_on_about')
     search_fields = ('name', 'name_en', 'name_es')
     inlines = [SkillInline]
 
