@@ -90,6 +90,35 @@ class MarkdownRenderingTests(SimpleTestCase):
         self.assertIn('<p><img alt="Chart" src="/media/projects/descriptions/chart.png" /></p>', rendered)
         self.assertNotIn('| :--- | :---: |', rendered)
 
+    def test_markdown_block_renders_code_snippets_and_preserves_latex(self):
+        from .templatetags.markdown_filters import render_markdown
+
+        description = (
+            '<pre><code class="language-markdown">'
+            '```python\nprint("hello")\n```\n\n'
+            'Inline $x^2$ and display '
+            '$$\\int_0^1 x\\,dx$$'
+            '</code></pre>'
+        )
+
+        rendered = render_markdown(description)
+
+        self.assertIn('<div class="highlight">', rendered)
+        self.assertIn('<span class="nb">print</span>', rendered)
+        self.assertIn('$x^2$', rendered)
+        self.assertIn('$$\\int_0^1 x\\,dx$$', rendered)
+
+    def test_html_code_block_continues_to_render_as_html(self):
+        from .templatetags.markdown_filters import render_markdown
+
+        rendered = render_markdown(
+            '<pre><code class="language-html">'
+            '&lt;h2&gt;Rendered HTML&lt;/h2&gt;'
+            '</code></pre>'
+        )
+
+        self.assertIn('<h2>Rendered HTML</h2>', rendered)
+
 
 class CategoryModelTest(TestCase):
     """

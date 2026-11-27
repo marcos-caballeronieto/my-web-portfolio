@@ -189,6 +189,7 @@ def render_markdown(text):
             'markdown.extensions.codehilite': {
                 'guess_lang': True,
                 'use_pygments': True,
+                'css_class': 'highlight',
             }
         }
         
@@ -228,6 +229,7 @@ def render_markdown(text):
             'markdown.extensions.codehilite': {
                 'guess_lang': True,
                 'use_pygments': True,
+                'css_class': 'highlight',
             }
         }
         
