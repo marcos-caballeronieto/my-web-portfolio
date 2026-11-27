@@ -158,6 +158,19 @@ class Project(models.Model):
         return self.list_html_content
     
 
+class ProjectDescriptionImage(models.Model):
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE,
+        related_name='description_images',
+    )
+    image = models.ImageField(upload_to='projects/descriptions/')
+    alt_text = models.CharField(max_length=200, blank=True)
+
+    def __str__(self):
+        return f"{self.project.title} description image"
+
+
 class CertificateCategory(models.Model):
     """
     Represents a category for grouping certificates and courses.

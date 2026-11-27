@@ -1,12 +1,32 @@
 from django.contrib import admin
+from django.utils.html import format_html
 from .models import (
     Project,
+    ProjectDescriptionImage,
     Category,
     Certificate,
     CertificateCategory,
     SkillCategory,
     Skill,
 )
+
+
+class ProjectDescriptionImageInline(admin.TabularInline):
+    model = ProjectDescriptionImage
+    extra = 1
+    fields = ('image', 'alt_text', 'markdown_reference')
+    readonly_fields = ('markdown_reference',)
+    verbose_name = "Description image"
+    verbose_name_plural = "Description images"
+    description = "Upload and save images here. Copy the Markdown reference into the project description."
+
+    @admin.display(description="Markdown reference")
+    def markdown_reference(self, obj):
+        if not obj or not obj.image:
+            return "-"
+        alt_text = obj.alt_text or "Image"
+        return format_html('![{}]({})', alt_text, obj.image.url)
+
 
 class ProjectAdmin(admin.ModelAdmin):
     """
@@ -21,10 +41,12 @@ class ProjectAdmin(admin.ModelAdmin):
     list_editable = ('is_featured', 'is_miniproject')
     filter_horizontal = ('categories', 'related_projects')
     prepopulated_fields = {'slug': ('title',)}
+    inlines = [ProjectDescriptionImageInline]
     
     fieldsets = (
         ("Basic Info", {
-            "fields": ("title", "slug", "short_description", "description", "categories", "is_featured", "relevance")
+            "fields": ("title", "slug", "short_description", "description", "categories", "is_featured", "relevance"),
+            "description": "Add images in the Description images section below and copy their Markdown references into the description. Use a Markdown code block for tables; they display in a horizontally scrollable layout on small screens."
         }),
         ("Miniproject Settings", {
             "fields": ("is_miniproject", "parent_project"),

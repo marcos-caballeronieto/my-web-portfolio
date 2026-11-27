@@ -13,7 +13,7 @@
                 {% include 'components/project_cover.html' with project=project height='400px' %}
             </div>
 
-            <div class="lead mb-5">
+            <div class="project-description mb-5">
                 {{ project.description|render_markdown|safe }}
             </div>
 

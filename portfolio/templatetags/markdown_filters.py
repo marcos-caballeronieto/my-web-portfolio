@@ -1,8 +1,41 @@
 from django import template
 import markdown
 import re
+from django.utils.html import format_html
 
 register = template.Library()
+
+
+def _wrap_tables(html):
+    return re.sub(
+        r'<table\b[^>]*>.*?</table>',
+        lambda match: f'<div class="markdown-table-wrapper">{match.group(0)}</div>',
+        html,
+        flags=re.DOTALL | re.IGNORECASE,
+    )
+
+
+def _render_markdown_images_in_paragraphs(html):
+    image_pattern = r'!\[([^\]]*)\]\(([^)]+)\)'
+
+    def replace_paragraph(match):
+        return re.sub(
+            image_pattern,
+            lambda image: format_html(
+                '<img src="{}" alt="{}">',
+                image.group(2),
+                image.group(1),
+            ),
+            match.group(0),
+        )
+
+    return re.sub(
+        r'<p\b[^>]*>.*?</p>',
+        replace_paragraph,
+        html,
+        flags=re.DOTALL | re.IGNORECASE,
+    )
+
 
 @register.filter
 def render_markdown(text):
@@ -71,10 +104,19 @@ def render_markdown(text):
     # Check if text contains other CKEditor HTML (paragraphs, divs, etc.) - but NOT code blocks
     if '<p>' in text or '<div>' in text or '<ul>' in text or '<ol>' in text:
         # This is CKEditor content with formatting, return as-is
-        return text
+        return _wrap_tables(_render_markdown_images_in_paragraphs(text))
     
     # Check if text contains markdown syntax directly (not in code blocks)
-    if '```' in text or re.search(r'^[-*]\s', text, re.MULTILINE) or re.search(r'^\d+\.\s', text, re.MULTILINE):
+    if (
+        '```' in text
+        or re.search(r'^[-*]\s', text, re.MULTILINE)
+        or re.search(r'^\d+\.\s', text, re.MULTILINE)
+        or re.search(
+            r'^\s*\|?.+\|.+\|?\s*$\n^\s*\|?\s*:?-{3,}',
+            text,
+            re.MULTILINE,
+        )
+    ):
         # This contains markdown syntax, render it
         extensions = [
             'markdown.extensions.codehilite',
@@ -91,10 +133,10 @@ def render_markdown(text):
         }
         
         try:
-            return markdown.markdown(text, extensions=extensions, extension_configs=extension_configs)
+            return _wrap_tables(markdown.markdown(text, extensions=extensions, extension_configs=extension_configs))
         except:
-            return markdown.markdown(text, extensions=extensions)
+            return _wrap_tables(markdown.markdown(text, extensions=extensions))
     
     # Plain text or mixed content, return as-is
-    return text
+    return _wrap_tables(text)
 

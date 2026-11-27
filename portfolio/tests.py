@@ -1,8 +1,10 @@
-from django.test import TestCase
+from django.contrib.auth import get_user_model
+from django.test import SimpleTestCase, TestCase
 from django.urls import reverse
 from .models import (
     Category,
     Project,
+    ProjectDescriptionImage,
     Certificate,
     CertificateCategory,
     SkillCategory,
@@ -10,6 +12,44 @@ from .models import (
 )
 
 # Create your tests here.
+
+class MarkdownRenderingTests(SimpleTestCase):
+    def test_markdown_table_is_rendered_and_wrapped_for_responsive_display(self):
+        from .templatetags.markdown_filters import render_markdown
+
+        description = '| Feature | Status |\n| --- | --- |\n| Images | Ready |'
+
+        rendered = render_markdown(description)
+
+        self.assertIn('<div class="markdown-table-wrapper"><table>', rendered)
+        self.assertIn('<th>Feature</th>', rendered)
+        self.assertIn('<td>Ready</td>', rendered)
+
+    def test_ckeditor_table_is_wrapped_and_images_are_preserved(self):
+        from .templatetags.markdown_filters import render_markdown
+
+        description = (
+            '<figure class="table"><table><tbody><tr><td>Details</td></tr></tbody></table></figure>'
+            '<figure class="image"><img src="/media/projects/example.png" alt="Example"></figure>'
+        )
+
+        rendered = render_markdown(description)
+
+        self.assertIn('<div class="markdown-table-wrapper"><table>', rendered)
+        self.assertIn('<img src="/media/projects/example.png" alt="Example">', rendered)
+
+    def test_markdown_image_reference_renders_from_description_paragraph(self):
+        from .templatetags.markdown_filters import render_markdown
+
+        description = '<p>![Preview](/media/projects/descriptions/preview.png)</p>'
+
+        rendered = render_markdown(description)
+
+        self.assertIn(
+            '<img src="/media/projects/descriptions/preview.png" alt="Preview">',
+            rendered,
+        )
+
 
 class CategoryModelTest(TestCase):
     """
@@ -88,6 +128,43 @@ class ProjectModelTest(TestCase):
         )
         # Should not raise validation error
         project.full_clean()
+
+
+class ProjectDescriptionImageAdminTests(TestCase):
+    def setUp(self):
+        self.project = Project.objects.create(
+            title="Image Admin Project",
+            slug="image-admin-project",
+            description="Project description",
+            cover_type=Project.CoverType.THREEJS,
+            list_cover_type=Project.CoverType.THREEJS,
+        )
+        self.user = get_user_model().objects.create_superuser(
+            username="admin",
+            email="admin@example.com",
+            password="test-password",
+        )
+        self.client.force_login(self.user)
+
+    def test_project_admin_has_description_image_upload_and_reference(self):
+        ProjectDescriptionImage.objects.create(
+            project=self.project,
+            image="projects/descriptions/preview.png",
+            alt_text="Preview",
+        )
+
+        response = self.client.get(
+            reverse("admin:portfolio_project_change", args=[self.project.pk])
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Description images")
+        self.assertContains(
+            response,
+            "![Preview](/media/projects/descriptions/preview.png)",
+        )
+        self.assertContains(response, 'name="description_images-1-image"')
+
 
 class CertificateModelTest(TestCase):
     """
