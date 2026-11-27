@@ -50,6 +50,46 @@ class MarkdownRenderingTests(SimpleTestCase):
             rendered,
         )
 
+    def test_markdown_table_renders_between_ckeditor_paragraphs(self):
+        from .templatetags.markdown_filters import render_markdown
+
+        description = (
+            '<p>Intro text</p>'
+            '<p>| Feature | Status |</p>'
+            '<p>| --- | --- |</p>'
+            '<p>| Images | Ready |</p>'
+            '<p>More text.</p>'
+        )
+
+        rendered = render_markdown(description)
+
+        self.assertIn('<p>Intro text</p>', rendered)
+        self.assertIn('<div class="markdown-table-wrapper"><table>', rendered)
+        self.assertIn('<td>Ready</td>', rendered)
+        self.assertIn('<p>More text.</p>', rendered)
+        self.assertNotIn('<p>| Feature | Status |</p>', rendered)
+
+    def test_markdown_table_after_text_renders_with_following_image(self):
+        from .templatetags.markdown_filters import render_markdown
+
+        description = (
+            '<pre><code class="language-markdown">'
+            'Intro text\n'
+            '| Model | Result |\n'
+            '| :--- | :---: |\n'
+            '| **Sample NN** | 95.05% |\n\n'
+            '![Chart](/media/projects/descriptions/chart.png)'
+            '</code></pre>'
+        )
+
+        rendered = render_markdown(description)
+
+        self.assertIn('<p>Intro text</p>', rendered)
+        self.assertIn('<div class="markdown-table-wrapper"><table>', rendered)
+        self.assertIn('<strong>Sample NN</strong>', rendered)
+        self.assertIn('<p><img alt="Chart" src="/media/projects/descriptions/chart.png" /></p>', rendered)
+        self.assertNotIn('| :--- | :---: |', rendered)
+
 
 class CategoryModelTest(TestCase):
     """
