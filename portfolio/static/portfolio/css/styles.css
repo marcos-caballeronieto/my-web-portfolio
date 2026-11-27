@@ -214,8 +214,8 @@ h1, h2, h3, h4, h5, h6, .navbar-brand {
 }
 
 .markdown-table-wrapper table {
-    width: 100%;
-    min-width: 32rem;
+    width: max-content;
+    min-width: 100%;
     margin: 0;
     border-collapse: separate;
     border-spacing: 0;
@@ -227,6 +227,7 @@ h1, h2, h3, h4, h5, h6, .navbar-brand {
     text-align: left;
     vertical-align: top;
     border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    white-space: nowrap;
 }
 
 .markdown-table-wrapper th {
